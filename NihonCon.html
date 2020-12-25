@@ -1,0 +1,106 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<!--<link rel = 'stylesheet' type = 'text/css/' href = './css/style.css'>-->
+		<title>NihonCon</title>
+		<style>
+			div.NihonCon
+			{
+				border-style: solid;
+				border-width: 1px;
+				height: 95%;
+				width: 95%;
+				padding: 5px;
+			}
+			div.TextCell
+			{
+				min-height: 100px;
+				min-width: 300px;
+				height: 200px;
+				width: 600px;
+				border-style: inset;
+				resize: both;
+				overflow: auto;
+				
+				display: flex;
+				flex-flow: column;
+				align-items: stretch;
+				
+				float: left;
+			}
+			div.CellHead
+			{
+				height: 25px;
+				border-style: outset;
+			}
+			div.CellContent
+			{
+				flex: 1;
+				overflow: auto;
+			}
+			div.iFrameCell
+			{
+				
+			}
+			iframe.extIFrame
+			{
+				min-height: 100px;
+				min-width: 300px;
+				height: 200px;
+				width: 600px;
+				resize: both;
+				overflow: auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div class = 'NihonCon'>
+			<div class = 'TextCell'>
+				<div class = 'CellHead'>
+					History (ctrl+c)
+				</div>
+				<div class = 'CellContent' id = 'History'>
+					<p>
+						ステンレス鋼とは、鉄に一定量以上のクロムを含ませた、腐食に対する耐性を持つ合金鋼である。規格などでは、クロム含有量が 10.5 % 以上、炭素含有量が 1.2 % 以下の鋼と定義される。1910年代前半ごろに発明・実用化された。		ステンレス鋼の耐食性の源は含有されているクロムで、このクロムによって不働態皮膜と呼ばれる数ナノメートルの極めて薄い皮膜が表面に形成されて、金属素地が腐食から保護されている。不働態皮膜は傷ついても一般的な環境であればすぐに回復し、一般的な普通鋼であれば錆びるような環境でもステンレス鋼が錆びることはない。一口にステンレス鋼と言っても、実際には多様なステンレス鋼の種類が存在しており、耐食性がより高い鋼種、高強度な鋼種、磁性を持つ鋼種、非磁性の鋼種、極低温でも脆化しない鋼種などがある……
+					</p>
+				</div>
+			</div>
+			<div class = 'TextCell'>
+				<div class = 'CellHead'>
+					Selected (press 1)
+				</div>
+				<div class = 'CellContent' id = 'Selected'>
+				
+				</div>
+			</div>
+				<iframe src = 'https://jisho.org' title = 'Jisho' class = 'extIFrame' id = 'JishoFrame'></iframe>
+		</div>
+	</body>
+	<script>
+		document.addEventListener('keydown', keyPressEvents);
+		
+		function keyPressEvents(e)
+		{
+			switch(e.code)
+			{
+				case 'Digit1':
+					Selected.textContent = window.getSelection().toString();
+					break;
+				case 'Digit2':
+					JishoFrame.src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
+					break;
+			}
+		}
+		
+		//scroll History to bottom
+		const scrollToBottom = function (mutationsList, observer)
+		{
+			hist = document.getElementById('History');
+			hist.scrollTop = hist.scrollHeight;
+		}
+		const observer = new MutationObserver(scrollToBottom);
+		observer.observe(document.getElementById('History'), {attributes: true, childList: true, subtree: true});
+		
+		
+	</script>
+</html>
