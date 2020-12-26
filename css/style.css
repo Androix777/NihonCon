@@ -20,17 +20,23 @@ div.Cell
 	flex-flow: column;
 	align-items: stretch;
 	
-	/*float: left;*/
-	
 	position: absolute;
 	z-index: 1;
 }
 div.CellHead
 {
 	height: 30px;
+	width: 90%;
 	background-color: #22b14c;
 	cursor: move;
 	z-index: 2;
+	float:left;
+}
+select.Hotkey
+{
+	height: 30px;
+	width: 10%;
+	float: left;
 }
 div.CellContent
 {
@@ -52,31 +58,20 @@ div.iFrameCell
 	resize: both;
 	overflow: hidden;
 	
-	/*float: right;*/
-	
 	position: absolute;
 	z-index: 1;
 }
 div.iFrameCellHead
 {
 	height: 30px;
+	width: 90%;
 	background-color: #4080ff;
 	cursor: move;
 	z-index: 2;
+	float:left;
 }
 iframe.extIFrame
 {
 	flex: 1;
 	overflow: auto;
-	/*
-	margin: 0;
-	padding: 0;
-	border: 0;
-	*/
-	/*min-height: 100px;
-	min-width: 300px;
-	height: 200px;
-	width: 600px;
-	resize: both;
-	overflow: auto;*/
 }

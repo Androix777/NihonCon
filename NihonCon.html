@@ -1,7 +1,6 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<!--<link rel = 'stylesheet' type = 'text/css/' href = './css/style.css'>-->
 		<title>NihonCon</title>
 		<style>
 			@import url('./css/style.css');
@@ -10,10 +9,17 @@
 	<body>
 		<div class = 'NihonCon'>
 			<div class = 'Cell' id = 'Cell01'>
-				<div class = 'CellHead' id = 'Cell01Head'>
-					History (ctrl+c)
+				<div>
+					<div class = 'CellHead' id = 'Cell01Head'>
+						History
+					</div>
+					<select name = 'Hotkey' class = 'Hotkey' id = 'Cell01Hotkey'>
+						<option value = 'None'>None</option>
+						<option value = 'Digit1'>Digit1</option>
+						<option value = 'Digit2'>Digit2</option>
+					</select>
 				</div>
-				<div class = 'CellContent' id = 'History'>
+				<div class = 'CellContent' id = 'Cell01Content'>
 					<p>
 						ステンレス鋼とは、鉄に一定量以上のクロムを含ませた、腐食に対する耐性を持つ合金鋼である。規格などでは、クロム含有量が 10.5 % 以上、炭素含有量が 1.2 % 以下の鋼と定義される。1910年代前半ごろに発明・実用化された。		ステンレス鋼の耐食性の源は含有されているクロムで、このクロムによって不働態皮膜と呼ばれる数ナノメートルの極めて薄い皮膜が表面に形成されて、金属素地が腐食から保護されている。不働態皮膜は傷ついても一般的な環境であればすぐに回復し、一般的な普通鋼であれば錆びるような環境でもステンレス鋼が錆びることはない。一口にステンレス鋼と言っても、実際には多様なステンレス鋼の種類が存在しており、耐食性がより高い鋼種、高強度な鋼種、磁性を持つ鋼種、非磁性の鋼種、極低温でも脆化しない鋼種などがある……
 					</p>
@@ -21,34 +27,71 @@
 			</div>
 			
 			<div class = 'Cell' id = 'Cell02'>
-				<div class = 'CellHead' id = 'Cell02Head'>
-					Selected (press 1)
+				<div>
+					<div class = 'CellHead' id = 'Cell02Head'>
+						Selected
+					</div>
+					<select name = 'Hotkey' class = 'Hotkey' id = 'Cell02Hotkey'>
+						<option value = 'None'>None</option>
+						<option value = 'Digit1'>Digit1</option>
+						<option value = 'Digit2'>Digit2</option>
+					</select>
 				</div>
-				<div class = 'CellContent' id = 'Selected'>
+				<div class = 'CellContent' id = 'Cell02Content'>
 				
 				</div>
 			</div>
 			<div class = 'iFrameCell', id = 'iFrame01'>
-				<div class = 'iFrameCellHead', id = 'iFrame01Head'>
-					Jisho
+				<div>
+					<div class = 'iFrameCellHead', id = 'iFrame01Head'>
+						Jisho
+					</div>
+					<select name = 'Hotkey' class = 'Hotkey' id = 'iFrame01Hotkey'>
+						<option value = 'None'>None</option>
+						<option value = 'Digit1'>Digit1</option>
+						<option value = 'Digit2'>Digit2</option>
+					</select>
 				</div>
-				<iframe is = 'x-frame-bypass' src = 'https://jisho.org' title = 'Jisho' class = 'extIFrame' id = 'JishoFrame'></iframe>
+				<iframe is = 'x-frame-bypass' src = 'https://jisho.org' title = 'Jisho' class = 'extIFrame' id = 'iFrame01Content'></iframe>
 			</div>
 		</div>
 	</body>
 	<script src = 'x-frame-bypass.js'></script>
 	<script>
-		document.addEventListener('keydown', keyPressEvents);
+		//leading zeros
+		function pad(num, size) 
+		{
+			num = num.toString();
+			while (num.length < size) num = "0" + num;
+			return num;
+		}
 		
+		//collect all hotkeys
+		var i = 1;
+		var hotkeys = new Array();
+		while(document.getElementById('Cell' + pad(i, 2) + 'Hotkey'))
+		{
+			hotkeys.push(document.getElementById('Cell' + pad(i, 2) + 'Hotkey'));
+			i++;
+		}
+		i = 1;
+		while(document.getElementById('iFrame' + pad(i, 2) + 'Hotkey'))
+		{
+			hotkeys.push(document.getElementById('iFrame' + pad(i, 2) + 'Hotkey'));
+			i++;
+		}
+		
+		//listen to keypresses
+		document.addEventListener('keydown', keyPressEvents);
 		function keyPressEvents(e)
 		{
 			switch(e.code)
 			{
 				case 'Digit1':
-					Selected.textContent = window.getSelection().toString();
+					Cell02Content.textContent = window.getSelection().toString();
 					break;
 				case 'Digit2':
-					JishoFrame.src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
+					iFrame01Content.src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
 					break;
 			}
 		}
@@ -56,11 +99,11 @@
 		//scroll History to bottom
 		const scrollToBottom = function (mutationsList, observer)
 		{
-			hist = document.getElementById('History');
+			hist = document.getElementById('Cell01Content');
 			hist.scrollTop = hist.scrollHeight;
 		}
 		const observer = new MutationObserver(scrollToBottom);
-		observer.observe(document.getElementById('History'), {attributes: true, childList: true, subtree: true});
+		observer.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
 		
 		//drag cells!
 		function dragElement(elem)
@@ -70,13 +113,6 @@
 			{
 				document.getElementById(elem.id + 'Head').onmousedown = dragMouseDown;
 			}
-			//no header - no drag
-			/*
-			else
-			{
-				elem.onmousedown = dragMouseDown;
-			}
-			*/
 			function dragMouseDown(e)
 			{
 				e = e || window.event;
