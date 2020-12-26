@@ -12,13 +12,13 @@
 				width: 95%;
 				padding: 5px;
 			}
-			div.TextCell
+			div.Cell
 			{
 				min-height: 100px;
 				min-width: 300px;
 				height: 200px;
 				width: 600px;
-				border-style: inset;
+				border: 1px solid #999999;
 				resize: both;
 				overflow: auto;
 				
@@ -26,12 +26,17 @@
 				flex-flow: column;
 				align-items: stretch;
 				
-				float: left;
+				/*float: left;*/
+				
+				position: absolute;
+				z-index: 1;
 			}
 			div.CellHead
 			{
-				height: 25px;
-				border-style: outset;
+				height: 30px;
+				background-color: #22b14c;
+				cursor: move;
+				z-index: 2;
 			}
 			div.CellContent
 			{
@@ -75,8 +80,8 @@
 	</head>
 	<body>
 		<div class = 'NihonCon'>
-			<div class = 'TextCell'>
-				<div class = 'CellHead'>
+			<div class = 'Cell' id = 'Cell01'>
+				<div class = 'CellHead' id = 'Cell01Head'>
 					History (ctrl+c)
 				</div>
 				<div class = 'CellContent' id = 'History'>
@@ -85,8 +90,9 @@
 					</p>
 				</div>
 			</div>
-			<div class = 'TextCell'>
-				<div class = 'CellHead'>
+			
+			<div class = 'Cell' id = 'Cell02'>
+				<div class = 'CellHead' id = 'Cell02Head'>
 					Selected (press 1)
 				</div>
 				<div class = 'CellContent' id = 'Selected'>
@@ -124,6 +130,51 @@
 		const observer = new MutationObserver(scrollToBottom);
 		observer.observe(document.getElementById('History'), {attributes: true, childList: true, subtree: true});
 		
+		//drag cells!
+		function dragElement(elem)
+		{
+			var p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+			if(document.getElementById(elem.id + 'Head'))
+			{
+				document.getElementById(elem.id + 'Head').onmousedown = dragMouseDown;
+			}
+			//no header - no drag
+			/*
+			else
+			{
+				elem.onmousedown = dragMouseDown;
+			}
+			*/
+			function dragMouseDown(e)
+			{
+				e = e || window.event;
+				e.preventDefault();
+				p3 = e.clientX;
+				p4 = e.clientY;
+				document.onmouseup = closeDragElement;
+				document.onmousemove = elementMove;
+			}
+			function elementMove(e)
+			{
+				e = e || window.event;
+				e.preventDefault();
+				p1 = p3 - e.clientX;
+				p2 = p4 - e.clientY;
+				p3 = e.clientX;
+				p4 = e.clientY;
+				elem.style.top = (elem.offsetTop - p2) + 'px';
+				elem.style.left = (elem.offsetLeft - p1) + 'px';
+			}
+			function closeDragElement()
+			{
+				document.onmouseup = null;
+				document.onmousemove = null;
+			}
+		}
+		
+		document.getElementById('Cell02').style.left = '650px';
+		dragElement(document.getElementById('Cell01'));
+		dragElement(document.getElementById('Cell02'));
 		
 	</script>
 </html>
