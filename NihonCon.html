@@ -42,14 +42,34 @@
 			{
 				
 			}
+			div.iFrameWrapper
+			{
+				min-height: 300px;
+				min-width: 200px;
+				height: 600px;
+				width: 400px;
+				
+				display: flex;
+				margin: 0;
+				padding: 0;
+				resize: both;
+				overflow: hidden;
+				
+				float: right;
+			}
 			iframe.extIFrame
 			{
-				min-height: 100px;
+				flex-grow: 1;
+				margin: 0;
+				padding: 0;
+				border: 0;
+				
+				/*min-height: 100px;
 				min-width: 300px;
 				height: 200px;
 				width: 600px;
 				resize: both;
-				overflow: auto;
+				overflow: auto;*/
 			}
 		</style>
 	</head>
@@ -73,7 +93,9 @@
 				
 				</div>
 			</div>
+			<div class = 'iFrameWrapper'>
 				<iframe is = 'x-frame-bypass' src = 'https://jisho.org' title = 'Jisho' class = 'extIFrame' id = 'JishoFrame'></iframe>
+			</div>
 		</div>
 	</body>
 	<script src = 'x-frame-bypass.js'></script>
