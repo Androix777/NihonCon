@@ -28,7 +28,10 @@
 				
 				</div>
 			</div>
-			<div class = 'iFrameWrapper'>
+			<div class = 'iFrameCell', id = 'iFrame01'>
+				<div class = 'iFrameCellHead', id = 'iFrame01Head'>
+					Jisho
+				</div>
 				<iframe is = 'x-frame-bypass' src = 'https://jisho.org' title = 'Jisho' class = 'extIFrame' id = 'JishoFrame'></iframe>
 			</div>
 		</div>
@@ -102,8 +105,10 @@
 		}
 		
 		document.getElementById('Cell02').style.left = '650px';
+		document.getElementById('iFrame01').style.left = '1300px';
 		dragElement(document.getElementById('Cell01'));
 		dragElement(document.getElementById('Cell02'));
+		dragElement(document.getElementById('iFrame01'));
 		
 	</script>
 </html>
