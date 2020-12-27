@@ -26,7 +26,7 @@ div.Cell
 div.CellHead
 {
 	height: 30px;
-	width: 90%;
+	width: 80%;
 	background-color: #22b14c;
 	cursor: move;
 	z-index: 2;
@@ -69,6 +69,12 @@ div.iFrameCellHead
 	cursor: move;
 	z-index: 2;
 	float:left;
+}
+button.CellX
+{
+	height: 30px;
+	width: 10%;
+	float: left;
 }
 iframe.extIFrame
 {

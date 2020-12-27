@@ -45,6 +45,12 @@ class Cell
 			document.getElementById(this.id + 'Hotkey').appendChild(opt);
 		}
 		
+		var cellX = document.createElement('button');
+		cellX.onclick = () => this.undraw();
+		cellX.className = 'CellX';
+		cellX.innerHTML = 'X';
+		document.getElementById(this.id + 'Top').appendChild(cellX);
+		
 		var cellContent = document.createElement('div');
 		cellContent.id = this.id + 'Content';
 		cellContent.className = 'CellContent'; //tochange
@@ -157,11 +163,11 @@ function dragElement(elem)
 
 function init()
 {
-	let cell1 = new Cell(CellTypes.Text, 'Cell01');
-	cell1.draw(20, 20);
+	let Cell01 = new Cell(CellTypes.Text, 'Cell01');
+	Cell01.draw(20, 20);
 	observer.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
-	let cell2 = new Cell(CellTypes.Text, 'Cell02');
-	cell2.draw(670, 20);
+	let Cell02 = new Cell(CellTypes.Text, 'Cell02');
+	Cell02.draw(670, 20);
 	
 	document.getElementById('iFrame01').style.left = 1370;
 	document.getElementById('iFrame01').style.top = 20;
