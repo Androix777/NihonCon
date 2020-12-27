@@ -16,7 +16,7 @@ def hello_world():
 def index():
     if request.method == 'GET':
         if(len(values) > 0):
-            return(values[-1])
+            return(values.join(' '))
         else:
             return('')
     
