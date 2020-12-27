@@ -4,18 +4,19 @@ const CellTypes = Object.freeze({'Text': 1, 'iFrame': 2});
 //cell class
 class Cell
 {
-	constructor(type, id)
+	constructor(id, type)
 	{
-		this.type = type;
 		this.id = id;
+		this.type = type;
 		this.hotkeys = ['hk1', 'hk2', 'hk3'];
 	}
-	draw(x = 0, y = 0)
+	draw(x = 20, y = 20)
 	{
-		if(document.getElementById(this.id)) return;
+		if(document.getElementById(this.id)) return; //already drawn
+		
 		var cell = document.createElement('div');
 		cell.id = this.id;
-		cell.className = 'Cell'; //tochange
+		cell.className = 'Cell';
 		cell.style.left = x + 'px';
 		cell.style.top = y + 'px';
 		document.getElementById('NihonCon').appendChild(cell);
@@ -26,7 +27,7 @@ class Cell
 		
 		var cellHead = document.createElement('div');
 		cellHead.id = this.id + 'Head';
-		cellHead.className = 'CellHead'; //tochange
+		cellHead.className = 'CellHead';
 		cellHead.innerHTML = this.id;
 		document.getElementById(this.id + 'Top').appendChild(cellHead);
 		
@@ -53,7 +54,7 @@ class Cell
 		
 		var cellContent = document.createElement('div');
 		cellContent.id = this.id + 'Content';
-		cellContent.className = 'CellContent'; //tochange
+		cellContent.className = 'CellContent';
 		document.getElementById(this.id).appendChild(cellContent);
 		
 		dragElement(document.getElementById(this.id));
@@ -61,6 +62,71 @@ class Cell
 	undraw()
 	{
 		document.getElementById(this.id).remove();
+	}
+}
+
+class iFrameCell extends Cell
+{
+	constructor(type, id, url)
+	{
+		super(type, id);
+		this.url = url;
+	}
+	draw(x = 20, y = 20)
+	{
+		if(document.getElementById(this.id)) return; //already drawn
+		
+		var cell = document.createElement('div');
+		cell.id = this.id;
+		cell.className = 'iFrameCell';
+		cell.style.left = x + 'px';
+		cell.style.top = y + 'px';
+		document.getElementById('NihonCon').appendChild(cell);
+		
+		var cellTop = document.createElement('div');
+		cellTop.id = this.id + 'Top';
+		document.getElementById(this.id).appendChild(cellTop);
+		
+		var cellHead = document.createElement('div');
+		cellHead.id = this.id + 'Head';
+		cellHead.className = 'iFrameCellHead';
+		cellHead.innerHTML = this.id;
+		document.getElementById(this.id + 'Top').appendChild(cellHead);
+		
+		//hotkey
+		var cellSelect = document.createElement('select');
+		cellSelect.id = this.id + 'Hotkey';
+		cellSelect.className = 'Hotkey';
+		document.getElementById(this.id + 'Top').appendChild(cellSelect);
+		
+		this.hotkeys.forEach(fillHotkeys, this);
+		function fillHotkeys(item, index)
+		{
+			var opt = document.createElement('option');
+			opt.value = 'index:' + index + ' item:' + item;
+			opt.innerHTML = 'index:' + index + ' item:' + item;
+			document.getElementById(this.id + 'Hotkey').appendChild(opt);
+		}
+		
+		var cellX = document.createElement('button');
+		cellX.onclick = () => this.undraw();
+		cellX.className = 'CellX';
+		cellX.innerHTML = 'X';
+		document.getElementById(this.id + 'Top').appendChild(cellX);
+		
+		var cellContent = document.createElement('iframe');
+		cellContent.id = this.id + 'Content';
+		cellContent.className = 'extIFrame';
+		document.getElementById(this.id).appendChild(cellContent);
+		//cellContent.src = url;
+		
+		this.load(this.url);
+		
+		dragElement(document.getElementById(this.id));
+	}
+	load(url)
+	{
+		document.getElementById(this.id + 'Content').src = url;
 	}
 }
 
@@ -113,7 +179,8 @@ function keyPressEvents(e)
 			Cell02Content.textContent = window.getSelection().toString();
 			break;
 		case 'Digit2':
-			iFrame01Content.src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
+			//iFrame01Content.src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
+			document.getElementById('iFrame01Content').src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
 			break;
 	}
 }
@@ -163,15 +230,13 @@ function dragElement(elem)
 
 function init()
 {
-	let Cell01 = new Cell(CellTypes.Text, 'Cell01');
+	let Cell01 = new Cell('Cell01', CellTypes.Text);
 	Cell01.draw(20, 20);
 	observer.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
-	let Cell02 = new Cell(CellTypes.Text, 'Cell02');
+	let Cell02 = new Cell('Cell02', CellTypes.Text);
 	Cell02.draw(670, 20);
-	
-	document.getElementById('iFrame01').style.left = 1370;
-	document.getElementById('iFrame01').style.top = 20;
-	dragElement(document.getElementById('iFrame01'));
+	let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
+	iFrame01.draw(20, 420);
 }
 
 init();
