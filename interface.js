@@ -242,18 +242,21 @@ function init()
 	let Cell02 = new Cell('Cell02', CellTypes.Text);
 	Cell02.draw(670, 20);
 	let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
-	iFrame01.draw(20, 420);
+	iFrame01.draw(20, 320);
 	
-	
+}
+
+function request(str)
+{
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
+			console.log(this.responseText);
 		  document.getElementById("ClipboardHistory").innerHTML = this.responseText;
 		}
 	};
 	xhttp.open("POST", "http://localhost:5000/text", true);
 	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send('value=' + '"test"');
+	xhttp.send('value=' + str);
 }
-
 init();
