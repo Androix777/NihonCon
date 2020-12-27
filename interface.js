@@ -237,6 +237,16 @@ function init()
 	Cell02.draw(670, 20);
 	let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
 	iFrame01.draw(20, 420);
+	
+	
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+		  document.getElementById("ClipboardData").innerHTML = this.responseText;
+		}
+	};
+	xhttp.open("GET", "http://localhost:5000", true);
+	xhttp.send();
 }
 
 init();
