@@ -141,7 +141,6 @@ async function getClipboardContents() {
     console.error('Failed to read clipboard contents: ', err);
   }
 }
-//getClipboardContents();
 
 //leading zeros
 function pad(num, size) 
@@ -230,6 +229,13 @@ function dragElement(elem)
 
 function init()
 {
+	//does not work in firefox
+	/*
+	setInterval(function()
+	{
+		getClipboardContents();
+	}, 5000);
+	*/
 	let Cell01 = new Cell('Cell01', CellTypes.Text);
 	Cell01.draw(20, 20);
 	observer.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
@@ -242,11 +248,12 @@ function init()
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-		  document.getElementById("ClipboardData").innerHTML = this.responseText;
+		  document.getElementById("ClipboardHistory").innerHTML = this.responseText;
 		}
 	};
-	xhttp.open("GET", "http://localhost:5000", true);
-	xhttp.send();
+	xhttp.open("POST", "http://localhost:5000/text", true);
+	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhttp.send('value=' + '"test"');
 }
 
 init();
