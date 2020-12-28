@@ -287,20 +287,55 @@ function sendClipboard()
 	}
 	function respTooltips(cellid, resp)
 	{
-		if(document.getElementById('ttip'))
+		var exResp = '{ "ttText" : [' + 
+			'{ "word" : "本当", "toolTip" : "ほんとう" },' + 
+			'{ "word" : "に", "toolTip" : "に" },' + 
+			'{ "word" : "成功", "toolTip" : "せいこう" },' +
+			'{ "word" : "！", "toolTip" : "!"} ]}';
+		var pResp = JSON.parse(exResp);
+		
+		
+		for(let i = 0; i < pResp.ttText.length; i++)
 		{
-			document.getElementById('ttip').remove();
+			if(document.getElementById('ToolTip' + pad(i + 1, 2)))
+			{
+				document.getElementById('ToolTip' + pad(i + 1, 2)).remove();
+			}
+	
+			var div = document.createElement('div');
+			div.id = 'ToolTip' + pad(i + 1, 2);
+			div.className = 'ToolTip';
+			
+			document.getElementById(cellid + 'Content').appendChild(div);
+			var span = document.createElement('span');
+			span.id = 'ToolTipText' + pad(i + 1, 2);
+			span.className = 'ToolTipText';
+			
+			div.textContent = pResp.ttText[i].word;
+			span.textContent = pResp.ttText[i].toolTip;
+			div.appendChild(span);
+			/*
+			document.addEventListener('mousemove', function(e)
+			{
+				document.getElementById('ToolTipText' + pad(i, 2)).style.transform = 'translateY('+(e.clientY-80)+'px)';
+				document.getElementById('ToolTipText' + pad(i, 2)).style.transform += 'translateX('+(e.clientX-100)+'px)';            
+			},false);*/
+			console.log('ToolTipText' + pad(i + 1, 2));
+
+			document.addEventListener('mousemove', function(e)
+			{
+				
+				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
+				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';            
+			},false);
+			
+			
 		}
-		var div = document.createElement('div');
-		div.id = 'ttip';
-		div.className = 'ToolTip';
-		div.textContent = resp;
-		document.getElementById(cellid + 'Content').appendChild(div);
-		var span = document.createElement('span');
-		span.className = 'ToolTipText';
-		span.textContent = 'Tooltip for: ' + resp;
-		div.appendChild(span);
+		
+		
+		
 	}
 }
 
 init();
+

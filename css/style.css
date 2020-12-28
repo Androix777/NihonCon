@@ -24,7 +24,9 @@ div.Cell
 	flex-flow: column;
 	align-items: stretch;
 	
+	overflow: hidden;
 	position: absolute;
+	
 	z-index: 1;
 }
 
@@ -49,6 +51,7 @@ div.CellContent
 {
 	flex: 1;
 	overflow: auto;
+	position: relative;
 }
 
 div.iFrameCell
@@ -95,12 +98,13 @@ iframe.extIFrame
 
 div.ToolTip 
 {
-  position: absolute;
+  position: relative;
+  padding: 5px 5px;
   display: inline-block;
   border-bottom: 1px dotted black;
 }
 
-div.ToolTip span.ToolTipText 
+div.ToolTip span.ToolTipText
 {
   visibility: hidden;
   width: 120px; /* will be variable */
@@ -108,13 +112,16 @@ div.ToolTip span.ToolTipText
   color: #fff;
   text-align: center;
   padding: 5px 0px;
+  display: inline-block;
   /* border-radius: 6px; */ /* rounded edges */
 
   /* Position the tooltip text */
-  position: absolute;
+  position: fixed;
+  /*transform:translate(50px,-50px);*/
+  /*
   overflow: visible;
   z-index: 10;
-  top: 100%;
+  /*top: 100%;
   left: 50%;
   margin-left: -60px; /* half of the width */
 }
