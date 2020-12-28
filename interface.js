@@ -184,14 +184,19 @@ function keyPressEvents(e)
 	}
 }
 
-//scroll History to bottom
+//scroll Cell01 to bottom
 const scrollToBottom = function (mutationsList, observer)
 {
 	hist = document.getElementById('Cell01Content');
 	hist.scrollTop = hist.scrollHeight;
 }
-const observer = new MutationObserver(scrollToBottom);
 
+//send data from hidden div on change
+const sendData = function(mutationsList, observer)
+{
+	sendClipboard();
+}
+ 
 //drag cells!
 function dragElement(elem)
 {
@@ -227,6 +232,10 @@ function dragElement(elem)
 	}
 }
 
+//observers are global
+const obsScroll = new MutationObserver(scrollToBottom);
+const obsSend = new MutationObserver(sendData);
+
 function init()
 {
 	//does not work in firefox
@@ -238,25 +247,38 @@ function init()
 	*/
 	let Cell01 = new Cell('Cell01', CellTypes.Text);
 	Cell01.draw(20, 20);
-	observer.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
+	
+	obsScroll.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
+	
 	let Cell02 = new Cell('Cell02', CellTypes.Text);
 	Cell02.draw(670, 20);
-	let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
-	iFrame01.draw(20, 320);
 	
+	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+	//let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
+	//iFrame01.draw(20, 320);
 }
 
-function request(str)
+function sendClipboard()
 {
+	let clipAddress = 'http://localhost:5000/text';
 	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			console.log(this.responseText);
-		  document.getElementById("ClipboardHistory").innerHTML = this.responseText;
+	xhttp.onreadystatechange = function() 
+	{
+		if (this.readyState == 4 && this.status == 200) 
+		{
+			console.log('Response: ' + this.responseText);
+			tNode = document.createTextNode(this.responseText);
+			document.getElementById('Cell01Content').appendChild(tNode);
+			document.getElementById('Cell01Content').appendChild(document.createElement("br"));
+			document.getElementById('Cell02Content').textContent = this.responseText;
 		}
 	};
-	xhttp.open("POST", "http://localhost:5000/text", true);
+	xhttp.open("POST", clipAddress, true);
 	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send('value=' + str);
+	xhttp.send('value=' + document.getElementById('Clipboard').innerHTML);
+	obsSend.disconnect();
+	document.getElementById('Clipboard').innerHTML = '';
+	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
 }
+
 init();
