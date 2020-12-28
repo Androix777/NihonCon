@@ -267,10 +267,10 @@ function sendClipboard()
 		if (this.readyState == 4 && this.status == 200) 
 		{
 			console.log('Response: ' + this.responseText);
-			tNode = document.createTextNode(this.responseText);
-			document.getElementById('Cell01Content').appendChild(tNode);
-			document.getElementById('Cell01Content').appendChild(document.createElement("br"));
-			document.getElementById('Cell02Content').textContent = this.responseText;
+			
+			respHistory('Cell01', this.responseText);
+			
+			respTooltips('Cell02', this.responseText);
 		}
 	};
 	xhttp.open("POST", clipAddress, true);
@@ -279,6 +279,28 @@ function sendClipboard()
 	obsSend.disconnect();
 	document.getElementById('Clipboard').innerHTML = '';
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+	
+	function respHistory(cellid, resp)
+	{
+		document.getElementById(cellid + 'Content').appendChild(document.createTextNode(resp));
+		document.getElementById(cellid + 'Content').appendChild(document.createElement("br"));
+	}
+	function respTooltips(cellid, resp)
+	{
+		if(document.getElementById('ttip'))
+		{
+			document.getElementById('ttip').remove();
+		}
+		var div = document.createElement('div');
+		div.id = 'ttip';
+		div.className = 'ToolTip';
+		div.textContent = resp;
+		document.getElementById(cellid + 'Content').appendChild(div);
+		var span = document.createElement('span');
+		span.className = 'ToolTipText';
+		span.textContent = 'Tooltip for: ' + resp;
+		div.appendChild(span);
+	}
 }
 
 init();

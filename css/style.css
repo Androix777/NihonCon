@@ -7,8 +7,10 @@ div.NihonCon
 	width: 98%;
 	padding: 5px;
 	position: absolute;
+	overflow: hidden;
 	z-index: 0;
 }
+
 div.Cell
 {
 	min-height: 100px;
@@ -17,7 +19,6 @@ div.Cell
 	width: 600px;
 	border: 1px solid #999999;
 	resize: both;
-	overflow: auto;
 	
 	display: flex;
 	flex-flow: column;
@@ -26,6 +27,7 @@ div.Cell
 	position: absolute;
 	z-index: 1;
 }
+
 div.CellHead
 {
 	height: 30px;
@@ -35,17 +37,20 @@ div.CellHead
 	z-index: 2;
 	float:left;
 }
+
 select.Hotkey
 {
 	height: 30px;
 	width: 10%;
 	float: left;
 }
+
 div.CellContent
 {
 	flex: 1;
 	overflow: auto;
 }
+
 div.iFrameCell
 {
 	min-height: 300px;
@@ -64,6 +69,7 @@ div.iFrameCell
 	position: absolute;
 	z-index: 1;
 }
+
 div.iFrameCellHead
 {
 	height: 30px;
@@ -73,14 +79,47 @@ div.iFrameCellHead
 	z-index: 2;
 	float:left;
 }
+
 button.CellX
 {
 	height: 30px;
 	width: 10%;
 	float: left;
 }
+
 iframe.extIFrame
 {
 	flex: 1;
 	overflow: auto;
+}
+
+div.ToolTip 
+{
+  position: absolute;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+div.ToolTip span.ToolTipText 
+{
+  visibility: hidden;
+  width: 120px; /* will be variable */
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0px;
+  /* border-radius: 6px; */ /* rounded edges */
+
+  /* Position the tooltip text */
+  position: absolute;
+  overflow: visible;
+  z-index: 10;
+  top: 100%;
+  left: 50%;
+  margin-left: -60px; /* half of the width */
+}
+
+div.ToolTip:hover span.ToolTipText 
+{
+  visibility: visible;
 }
