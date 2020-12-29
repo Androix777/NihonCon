@@ -27,7 +27,7 @@ def index():
         doc = [{'word': w.text, 'toolTip': w.pos_} for w in (nlp(value))]
         for word in doc:
             allWords.append(word)
-        return jsonify(allWords)
+        return jsonify({'ttText' : allWords})
         
 
 if __name__ == '__main__':
