@@ -99,9 +99,10 @@ iframe.extIFrame
 div.ToolTip 
 {
   position: relative;
-  padding: 5px 5px;
+  padding: 3px 5px;
   display: inline-block;
-  border-bottom: 1px dotted black;
+  background-clip: padding-box;
+  border: 3px solid transparent;
 }
 
 div.ToolTip span.ToolTipText

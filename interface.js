@@ -320,6 +320,7 @@ function sendClipboard()
 			var div = document.createElement('div');
 			div.id = 'ToolTip' + pad(i + 1, 2);
 			div.className = 'ToolTip';
+			div.style.backgroundColor = '#99ff99';
 			
 			document.getElementById(cellid + 'Content').appendChild(div);
 			var span = document.createElement('span');
