@@ -331,7 +331,7 @@ function sendClipboard()
 			div.appendChild(span);
 
 			//attach tooltips to mouse
-			document.addEventListener('mousemove', function(e)
+			div.addEventListener('mousemove', function(e)
 			{
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';            
