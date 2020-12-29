@@ -65,6 +65,7 @@ class Cell
 	}
 }
 
+//iframe cell class
 class iFrameCell extends Cell
 {
 	constructor(type, id, url)
@@ -236,6 +237,7 @@ function dragElement(elem)
 const obsScroll = new MutationObserver(scrollToBottom);
 const obsSend = new MutationObserver(sendData);
 
+//initializing
 function init()
 {
 	//does not work in firefox
@@ -254,10 +256,13 @@ function init()
 	Cell02.draw(670, 20);
 	
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+	
+	//we actually still have iframes...
 	//let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
 	//iFrame01.draw(20, 320);
 }
 
+//send clipboard contents to server
 function sendClipboard()
 {
 	let clipAddress = 'http://localhost:5000/text';
@@ -280,18 +285,24 @@ function sendClipboard()
 	document.getElementById('Clipboard').innerHTML = '';
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
 	
+	//parse a 'history' response
 	function respHistory(cellid, resp)
 	{
 		document.getElementById(cellid + 'Content').appendChild(document.createTextNode(resp));
 		document.getElementById(cellid + 'Content').appendChild(document.createElement("br"));
 	}
+	
+	//parse a 'tooltip' response
 	function respTooltips(cellid, resp)
 	{
+		//example response for testing
 		var exResp = '{ "ttText" : [' +
 			'{ "word" : "本当", "toolTip" : "ほんとう is a very complicated word that requires a very long text explanation which will have to be formatted accordingly" },' +
 			'{ "word" : "に", "toolTip" : "に" },' +
 			'{ "word" : "成功", "toolTip" : "せいこう" },' +
 			'{ "word" : "！", "toolTip" : "!"} ]}';
+			
+		//resp = exResp;
 		var pResp = JSON.parse(resp);
 		
 		//clean existing
@@ -302,6 +313,7 @@ function sendClipboard()
 			j++;
 		}
 		
+		//create tooltips
 		for(let i = 0; i < pResp.ttText.length; i++)
 		{
 	
@@ -318,6 +330,7 @@ function sendClipboard()
 			span.textContent = pResp.ttText[i].toolTip;
 			div.appendChild(span);
 
+			//attach tooltips to mouse
 			document.addEventListener('mousemove', function(e)
 			{
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';

@@ -107,23 +107,15 @@ div.ToolTip
 div.ToolTip span.ToolTipText
 {
   visibility: hidden;
-  width: 120px; /* will be variable */
+  max-width: 500px;
   background-color: #555;
   color: #fff;
   text-align: center;
-  padding: 5px 0px;
+  padding: 5px 5px;
   display: inline-block;
   /* border-radius: 6px; */ /* rounded edges */
 
-  /* Position the tooltip text */
   position: fixed;
-  /*transform:translate(50px,-50px);*/
-  /*
-  overflow: visible;
-  z-index: 10;
-  /*top: 100%;
-  left: 50%;
-  margin-left: -60px; /* half of the width */
 }
 
 div.ToolTip:hover span.ToolTipText 
