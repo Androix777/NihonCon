@@ -27,7 +27,7 @@ def index():
         doc = [(w.text, w.pos_) for w in (nlp(value))]
         for word in doc:
             allWords.append(word)
-        return Flask.jsonify(allWords)
+        return jsonify(allWords)
         
 
 if __name__ == '__main__':
