@@ -4,11 +4,11 @@ from flask import render_template
 from flask_cors import CORS
 from flask import request
 import spacy
-from jamdict import Jamdict
+#from jamdict import Jamdict
 
 app = Flask(__name__)
 CORS(app)
-jmd = Jamdict()
+#jmd = Jamdict()
 nlp = spacy.load("ja_core_news_lg")
 
 @app.route('/')
@@ -24,7 +24,7 @@ def index():
         allWords = []
         
         value = request.form.get('value')
-        doc = [(w.text, w.pos_) for w in (nlp(value))]
+        doc = [{'word': w.text, 'toolTip': w.pos_} for w in (nlp(value))]
         for word in doc:
             allWords.append(word)
         return jsonify(allWords)
