@@ -292,15 +292,18 @@ function sendClipboard()
 			'{ "word" : "に", "toolTip" : "に" },' +
 			'{ "word" : "成功", "toolTip" : "せいこう" },' +
 			'{ "word" : "！", "toolTip" : "!"} ]}';
-		var pResp = JSON.parse(exResp);
+		var pResp = JSON.parse(resp);
 		
+		//clean existing
+		let j = 1;
+		while(document.getElementById('ToolTip' + pad(j, 2)))
+		{
+			document.getElementById('ToolTip' + pad(j, 2)).remove();
+			j++;
+		}
 		
 		for(let i = 0; i < pResp.ttText.length; i++)
 		{
-			if(document.getElementById('ToolTip' + pad(i + 1, 2)))
-			{
-				document.getElementById('ToolTip' + pad(i + 1, 2)).remove();
-			}
 	
 			var div = document.createElement('div');
 			div.id = 'ToolTip' + pad(i + 1, 2);
@@ -315,19 +318,12 @@ function sendClipboard()
 			span.textContent = pResp.ttText[i].toolTip;
 			div.appendChild(span);
 
-			console.log('ToolTipText' + pad(i + 1, 2));
-
 			document.addEventListener('mousemove', function(e)
 			{
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';            
-			},false);
-			
-			
-		}
-		
-		
-		
+			},false);		
+		}	
 	}
 }
 
