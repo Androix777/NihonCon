@@ -24,7 +24,14 @@ def index():
         allWords = []
         
         value = request.form.get('value')
-        doc = [{'word': w.text, 'toolTip': w.pos_} for w in (nlp(value))]
+        doc = [{'word': w.text} for w in (nlp(value))]
+        jmd = Jamdict()
+        for i in range(len(doc)):
+            translate = jmd.lookup(doc[i]['word'])
+            if (len(translate.entries) > 0):
+                doc[i]['tooltip'] = str(translate.entries[0].senses[0].gloss)
+        
+        
         for word in doc:
             allWords.append(word)
         return jsonify({'ttText' : allWords})
