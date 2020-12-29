@@ -275,7 +275,7 @@ function sendClipboard()
 	};
 	xhttp.open("POST", clipAddress, true);
 	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send('value=' + document.getElementById('Clipboard').innerHTML);
+	xhttp.send('value=' + document.getElementById('Clipboard').textContent);
 	obsSend.disconnect();
 	document.getElementById('Clipboard').innerHTML = '';
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
@@ -287,9 +287,9 @@ function sendClipboard()
 	}
 	function respTooltips(cellid, resp)
 	{
-		var exResp = '{ "ttText" : [' + 
-			'{ "word" : "本当", "toolTip" : "ほんとう" },' + 
-			'{ "word" : "に", "toolTip" : "に" },' + 
+		var exResp = '{ "ttText" : [' +
+			'{ "word" : "本当", "toolTip" : "ほんとう is a very complicated word that requires a very long text explanation which will have to be formatted accordingly" },' +
+			'{ "word" : "に", "toolTip" : "に" },' +
 			'{ "word" : "成功", "toolTip" : "せいこう" },' +
 			'{ "word" : "！", "toolTip" : "!"} ]}';
 		var pResp = JSON.parse(exResp);
@@ -314,17 +314,11 @@ function sendClipboard()
 			div.textContent = pResp.ttText[i].word;
 			span.textContent = pResp.ttText[i].toolTip;
 			div.appendChild(span);
-			/*
-			document.addEventListener('mousemove', function(e)
-			{
-				document.getElementById('ToolTipText' + pad(i, 2)).style.transform = 'translateY('+(e.clientY-80)+'px)';
-				document.getElementById('ToolTipText' + pad(i, 2)).style.transform += 'translateX('+(e.clientX-100)+'px)';            
-			},false);*/
+
 			console.log('ToolTipText' + pad(i + 1, 2));
 
 			document.addEventListener('mousemove', function(e)
 			{
-				
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';            
 			},false);

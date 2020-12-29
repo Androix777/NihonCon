@@ -4,11 +4,11 @@ from flask import render_template
 from flask_cors import CORS
 from flask import request
 import spacy
-#from jamdict import Jamdict
+from jamdict import Jamdict
 
 app = Flask(__name__)
 CORS(app)
-#jmd = Jamdict()
+jmd = Jamdict()
 nlp = spacy.load("ja_core_news_lg")
 
 @app.route('/')
