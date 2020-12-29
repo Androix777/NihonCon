@@ -29,7 +29,7 @@ def index():
         for i in range(len(doc)):
             translate = jmd.lookup(doc[i]['word'])
             if (len(translate.entries) > 0):
-                doc[i]['tooltip'] = str(translate.entries[0].senses[0].gloss)
+                doc[i]['toolTip'] = str(translate.entries[0].senses[0].gloss)
         
         
         for word in doc:
