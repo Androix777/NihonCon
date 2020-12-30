@@ -331,8 +331,9 @@ const scrollToBottom = function (mutationsList, observer)
 const autoSend = function(mutationsList, observer)
 {
 	console.log('called autoSend()');
-	//Cells[0].func(sendData('http://localhost:5000/text', getClipboard()));
-	Cells[1].func(sendData('http://localhost:5000/text', getClipboard()));
+	clip = getClipboard();
+	Cells[0].func(sendData('http://localhost:5000/text', clip));
+	Cells[1].func(sendData('http://localhost:5000/text', clip));
 }
  
 //drag cells!
