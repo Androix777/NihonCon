@@ -307,10 +307,10 @@ function sendClipboard()
 		
 		//clean existing
 		let j = 1;
-		while(document.getElementById('ToolTip' + pad(j, 2)))
+		while(document.getElementById(cellid + 'ToolTip' + pad(j, 2)))
 		{
-			document.getElementById('ToolTip' + pad(j, 2)).remove();
-			document.getElementById('ToolTipText' + pad(j, 2)).remove();
+			document.getElementById(cellid + 'ToolTip' + pad(j, 2)).remove();
+			document.getElementById(cellid + 'ToolTipText' + pad(j, 2)).remove();
 			j++;
 		}
 		
@@ -319,13 +319,13 @@ function sendClipboard()
 		{
 	
 			var div = document.createElement('div');
-			div.id = 'ToolTip' + pad(i + 1, 2);
+			div.id = cellid + 'ToolTip' + pad(i + 1, 2);
 			div.className = 'ToolTip';
 			div.style.backgroundColor = '#99ff99';
 			
 			document.getElementById(cellid + 'Content').appendChild(div);
 			var span = document.createElement('span');
-			span.id = 'ToolTipText' + pad(i + 1, 2);
+			span.id = cellid + 'ToolTipText' + pad(i + 1, 2);
 			span.className = 'ToolTipText';
 			
 			div.textContent = pResp.ttText[i].word;
@@ -335,13 +335,13 @@ function sendClipboard()
 			//attach tooltips to mouse
 			div.addEventListener('mousemove', function(e)
 			{
-				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
-				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';
-				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.visibility = 'visible';
+				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
+				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';
+				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.visibility = 'visible';
 			},false);		
 			div.addEventListener('mouseleave', function(e)
 			{
-				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.visibility = 'hidden';
+				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.visibility = 'hidden';
 			},false);	
 		}	
 	}
