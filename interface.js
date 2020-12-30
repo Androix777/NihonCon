@@ -329,14 +329,19 @@ function sendClipboard()
 			
 			div.textContent = pResp.ttText[i].word;
 			span.textContent = pResp.ttText[i].toolTip;
-			div.appendChild(span);
+			document.getElementById('NihonCon').appendChild(span);
 
 			//attach tooltips to mouse
 			div.addEventListener('mousemove', function(e)
 			{
 				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
-				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';            
+				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';
+				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.visibility = 'visible';
 			},false);		
+			div.addEventListener('mouseleave', function(e)
+			{
+				document.getElementById('ToolTipText' + pad(i + 1, 2)).style.visibility = 'hidden';
+			},false);	
 		}	
 	}
 }

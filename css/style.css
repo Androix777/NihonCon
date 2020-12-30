@@ -51,7 +51,7 @@ div.CellContent
 {
 	flex: 1;
 	overflow: auto;
-	position: relative;
+	/* position: relative; */
 }
 
 div.iFrameCell
@@ -105,7 +105,7 @@ div.ToolTip
   border: 3px solid transparent;
 }
 
-div.ToolTip span.ToolTipText
+span.ToolTipText
 {
   visibility: hidden;
   max-width: 500px;
@@ -117,9 +117,5 @@ div.ToolTip span.ToolTipText
   /* border-radius: 6px; */ /* rounded edges */
 
   position: fixed;
-}
-
-div.ToolTip:hover span.ToolTipText 
-{
-  visibility: visible;
+  z-index: 10;
 }
