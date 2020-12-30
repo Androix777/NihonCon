@@ -73,12 +73,59 @@ class Cell
 			i++;
 		}
 	}
-	respHistory(resp)
+	respHistory(request)
 	{
-		document.getElementById(this.id + 'Content').appendChild(document.createTextNode(await resp));
-		document.getElementById(this.id + 'Content').appendChild(document.createElement("br"));
+		
+		const handleResponse = (response) =>
+		{
+			console.log(response);
+			document.getElementById(this.id + 'Content').appendChild(document.createTextNode(response));
+			document.getElementById(this.id + 'Content').appendChild(document.createElement("br"));
+		}
+		const handleError = (response) =>
+		{
+			alert(response);
+		}
+		request.then(handleResponse).catch(handleError);
 	}
 }
+
+function testFunc(str = 'none')
+{
+	console.log('testFunc called with: ' + str);
+}
+
+//get clipboard, return it, clear it, nothing else
+function getClipboard()
+{
+	var clip = document.getElementById('Clipboard').textContent;
+	obsSend.disconnect();
+	document.getElementById('Clipboard').innerHTML = '';
+	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+	return clip;
+}
+
+//send something, return response, nothing else
+async function sendData(url, data)
+{
+	console.log('called sendData()');
+	return new Promise((resolve, reject) =>
+	{
+		const xhttp = new XMLHttpRequest();
+		xhttp.open("POST", url, true);
+		xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhttp.send('value=' + data);
+		
+		xhttp.onload = () =>
+		{
+			resolve(xhttp.response);
+		}
+		xhttp.onerror = () =>
+		{
+			reject('Failed to reach the server with sendData()');
+		}
+	});
+}	
 
 //iframe cell class
 class iFrameCell extends Cell
@@ -208,9 +255,10 @@ const scrollToBottom = function (mutationsList, observer)
 }
 
 //send data from hidden div on change
-const sendData2 = function(mutationsList, observer)
+const autoSend = function(mutationsList, observer)
 {
-	//sendClipboard2();
+	console.log('called autoSend()');
+	Cell01.func(sendData('http://localhost:5000/text', getClipboard()));
 }
  
 //drag cells!
@@ -250,7 +298,7 @@ function dragElement(elem)
 
 //observers are global
 const obsScroll = new MutationObserver(scrollToBottom);
-const obsSend = new MutationObserver(sendData2);
+const obsSend = new MutationObserver(autoSend);
 
 //initializing
 function init()
@@ -279,39 +327,6 @@ function init()
 let Cell01 = new Cell('Cell01', CellTypes.Text);
 Cell01.draw(20, 20);
 //Cell01.func('asd');
-	
-function testFunc(str = 'none')
-{
-	console.log('testFunc called with: ' + str);
-}
-
-//get clipboard, return it, clear it, nothing else
-function getClipboard()
-{
-	var clip = document.getElementById('Clipboard').textContent;
-	obsSend.disconnect();
-	document.getElementById('Clipboard').innerHTML = '';
-	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
-	return clip;
-}
-
-//send something, return response, nothing else
-function sendData(data)
-{
-	let clipAddress = 'http://localhost:5000/text';
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() 
-	{
-		if (this.readyState == 4 && this.status == 200) 
-		{
-			console.log('Response: ' + this.responseText);
-			return this.responseText;
-		}
-	};
-	xhttp.open("POST", clipAddress, true);
-	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send('value=' + data);
-}	
 
 //send clipboard contents to server
 function sendClipboard2()
