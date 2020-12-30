@@ -1,14 +1,21 @@
 //cell types (maybe?..)
 const CellTypes = Object.freeze({'Text': 1, 'iFrame': 2});
+const CellFunctions = Object.freeze({'History': 1, 'ToolTip': 2});
 
 //cell class
 class Cell
 {
-	constructor(id, type)
+	constructor(id, type, func)
 	{
+		this.fTypes = {};
+		this.fTypes[CellFunctions.History] = this.respHistory;
+		this.fTypes[CellFunctions.ToolTip] = this.respTooltip;
+		
+		console.log(func);
 		this.id = id;
 		this.type = type;
 		this.hotkeys = ['hk1', 'hk2', 'hk3'];
+		this.func = this.fTypes[func];
 	}
 	draw(x = 20, y = 20)
 	{
@@ -62,8 +69,133 @@ class Cell
 	undraw()
 	{
 		document.getElementById(this.id).remove();
+		
+		//remove tooltips
+		let i = 1;
+		while(document.getElementById(this.id + 'ToolTip' + pad(i, 2)))
+		{
+			document.getElementById(cellid + 'ToolTip' + pad(i, 2)).remove();
+			document.getElementById(cellid + 'ToolTipText' + pad(i, 2)).remove();
+			i++;
+		}
+	}
+	
+	//request types
+	respHistory(request)
+	{
+		
+		const handleResponse = (response) =>
+		{
+			console.log(response);
+			document.getElementById(this.id + 'Content').appendChild(document.createTextNode(response));
+			document.getElementById(this.id + 'Content').appendChild(document.createElement("br"));
+		}
+		const handleError = (response) =>
+		{
+			alert(response);
+		}
+		request.then(handleResponse).catch(handleError);
+	}
+	respTooltip(request)
+	{
+		
+		const handleResponse = (response) =>
+		{
+			console.log(response);
+			//example response for testing
+			var exResp = '{ "ttText" : [' +
+				'{ "word" : "本当", "toolTip" : "ほんとう is a very complicated word that requires a very long text explanation which will have to be formatted accordingly" },' +
+				'{ "word" : "に", "toolTip" : "に" },' +
+				'{ "word" : "成功", "toolTip" : "せいこう" },' +
+				'{ "word" : "！", "toolTip" : "!"} ]}';
+				
+			//resp = exResp;
+			var pResp = JSON.parse(response);
+			
+			//clean existing
+			let j = 1;
+			while(document.getElementById(this.id + 'ToolTip' + pad(j, 2)))
+			{
+				document.getElementById(this.id + 'ToolTip' + pad(j, 2)).remove();
+				document.getElementById(this.id + 'ToolTipText' + pad(j, 2)).remove();
+				j++;
+			}
+			
+			//create tooltips
+			for(let i = 0; i < pResp.ttText.length; i++)
+			{
+				var div = document.createElement('div');
+				div.id = this.id + 'ToolTip' + pad(i + 1, 2);
+				div.className = 'ToolTip';
+				div.style.backgroundColor = '#99ff99';
+				
+				document.getElementById(this.id + 'Content').appendChild(div);
+				var span = document.createElement('span');
+				span.id = this.id + 'ToolTipText' + pad(i + 1, 2);
+				span.className = 'ToolTipText';
+				
+				div.textContent = pResp.ttText[i].word;
+				span.textContent = pResp.ttText[i].toolTip;
+				document.getElementById('NihonCon').appendChild(span);
+
+				//attach tooltips to mouse
+				var cellid = this.id;
+				div.addEventListener('mousemove', function(e)
+				{
+					document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
+					document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';
+					document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.visibility = 'visible';
+				},false);		
+				div.addEventListener('mouseleave', function(e)
+				{
+					document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.visibility = 'hidden';
+				},false);	
+			}
+		}
+		const handleError = (response) =>
+		{
+			alert(response);
+		}
+		request.then(handleResponse).catch(handleError);
 	}
 }
+
+function testFunc(str = 'none')
+{
+	console.log('testFunc called with: ' + str);
+}
+
+//get clipboard, return it, clear it, nothing else
+function getClipboard()
+{
+	var clip = document.getElementById('Clipboard').textContent;
+	obsSend.disconnect();
+	document.getElementById('Clipboard').innerHTML = '';
+	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+	return clip;
+}
+
+//send something, return response, nothing else
+async function sendData(url, data)
+{
+	console.log('called sendData()');
+	return new Promise((resolve, reject) =>
+	{
+		const xhttp = new XMLHttpRequest();
+		xhttp.open("POST", url, true);
+		xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhttp.send('value=' + data);
+		
+		xhttp.onload = () =>
+		{
+			resolve(xhttp.response);
+		}
+		xhttp.onerror = () =>
+		{
+			reject('Failed to reach the server with sendData()');
+		}
+	});
+}	
 
 //iframe cell class
 class iFrameCell extends Cell
@@ -134,11 +266,14 @@ class iFrameCell extends Cell
 //read clipboard directly?
 //seems there is no way to detect copy from outside the page
 //aside from reading clipboard every x seconds...
-async function getClipboardContents() {
-  try {
+async function getClipboardContents() 
+{
+  try 
+  {
     const text = await navigator.clipboard.readText();
     console.log('Pasted content: ', text);
-  } catch (err) {
+  } catch (err) 
+  {
     console.error('Failed to read clipboard contents: ', err);
   }
 }
@@ -193,9 +328,12 @@ const scrollToBottom = function (mutationsList, observer)
 }
 
 //send data from hidden div on change
-const sendData = function(mutationsList, observer)
+const autoSend = function(mutationsList, observer)
 {
-	sendClipboard();
+	console.log('called autoSend()');
+	clip = getClipboard();
+	Cells[0].func(sendData('http://localhost:5000/text', clip));
+	Cells[1].func(sendData('http://localhost:5000/text', clip));
 }
  
 //drag cells!
@@ -235,7 +373,9 @@ function dragElement(elem)
 
 //observers are global
 const obsScroll = new MutationObserver(scrollToBottom);
-const obsSend = new MutationObserver(sendData);
+const obsSend = new MutationObserver(autoSend);
+
+var Cells = new Array();
 
 //initializing
 function init()
@@ -247,13 +387,23 @@ function init()
 		getClipboardContents();
 	}, 5000);
 	*/
-	let Cell01 = new Cell('Cell01', CellTypes.Text);
-	Cell01.draw(20, 20);
+	console.log(Cell);
 	
-	obsScroll.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
+	let Cell01 = new Cell('Cell01', CellTypes.Text, CellFunctions.History);
+	Cells.push(Cell01);
+	Cells[0].draw(20, 20);
 	
-	let Cell02 = new Cell('Cell02', CellTypes.Text);
-	Cell02.draw(670, 20);
+	let Cell02 = new Cell('Cell02', CellTypes.Text, CellFunctions.ToolTip);
+	Cells.push(Cell02);
+	Cells[1].draw(670, 20);
+	
+	let Cell03 = new Cell('Cell03', CellTypes.Text, null);
+	Cells.push(Cell03);
+	Cells[2].draw(20, 240);
+	
+	//obsScroll.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
+	
+	
 	
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
 	
@@ -262,8 +412,11 @@ function init()
 	//iFrame01.draw(20, 320);
 }
 
+
+//Cell01.func('asd');
+
 //send clipboard contents to server
-function sendClipboard()
+function sendClipboard2()
 {
 	let clipAddress = 'http://localhost:5000/text';
 	var xhttp = new XMLHttpRequest();
@@ -284,7 +437,7 @@ function sendClipboard()
 	obsSend.disconnect();
 	document.getElementById('Clipboard').innerHTML = '';
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
-	
+	/*
 	//parse a 'history' response
 	function respHistory(cellid, resp)
 	{
@@ -345,6 +498,7 @@ function sendClipboard()
 			},false);	
 		}	
 	}
+	*/
 }
 
 init();
