@@ -310,6 +310,7 @@ function sendClipboard()
 		while(document.getElementById('ToolTip' + pad(j, 2)))
 		{
 			document.getElementById('ToolTip' + pad(j, 2)).remove();
+			document.getElementById('ToolTipText' + pad(j, 2)).remove();
 			j++;
 		}
 		
