@@ -9,6 +9,7 @@ class Cell
 		this.id = id;
 		this.type = type;
 		this.hotkeys = ['hk1', 'hk2', 'hk3'];
+		this.func = this.respHistory;
 	}
 	draw(x = 20, y = 20)
 	{
@@ -62,6 +63,20 @@ class Cell
 	undraw()
 	{
 		document.getElementById(this.id).remove();
+		
+		//remove tooltips
+		let i = 1;
+		while(document.getElementById(this.id + 'ToolTip' + pad(i, 2)))
+		{
+			document.getElementById(cellid + 'ToolTip' + pad(i, 2)).remove();
+			document.getElementById(cellid + 'ToolTipText' + pad(i, 2)).remove();
+			i++;
+		}
+	}
+	respHistory(resp)
+	{
+		document.getElementById(this.id + 'Content').appendChild(document.createTextNode(await resp));
+		document.getElementById(this.id + 'Content').appendChild(document.createElement("br"));
 	}
 }
 
@@ -193,9 +208,9 @@ const scrollToBottom = function (mutationsList, observer)
 }
 
 //send data from hidden div on change
-const sendData = function(mutationsList, observer)
+const sendData2 = function(mutationsList, observer)
 {
-	sendClipboard();
+	//sendClipboard2();
 }
  
 //drag cells!
@@ -235,7 +250,7 @@ function dragElement(elem)
 
 //observers are global
 const obsScroll = new MutationObserver(scrollToBottom);
-const obsSend = new MutationObserver(sendData);
+const obsSend = new MutationObserver(sendData2);
 
 //initializing
 function init()
@@ -247,8 +262,7 @@ function init()
 		getClipboardContents();
 	}, 5000);
 	*/
-	let Cell01 = new Cell('Cell01', CellTypes.Text);
-	Cell01.draw(20, 20);
+	
 	
 	obsScroll.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
 	
@@ -262,8 +276,45 @@ function init()
 	//iFrame01.draw(20, 320);
 }
 
+let Cell01 = new Cell('Cell01', CellTypes.Text);
+Cell01.draw(20, 20);
+//Cell01.func('asd');
+	
+function testFunc(str = 'none')
+{
+	console.log('testFunc called with: ' + str);
+}
+
+//get clipboard, return it, clear it, nothing else
+function getClipboard()
+{
+	var clip = document.getElementById('Clipboard').textContent;
+	obsSend.disconnect();
+	document.getElementById('Clipboard').innerHTML = '';
+	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+	return clip;
+}
+
+//send something, return response, nothing else
+function sendData(data)
+{
+	let clipAddress = 'http://localhost:5000/text';
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() 
+	{
+		if (this.readyState == 4 && this.status == 200) 
+		{
+			console.log('Response: ' + this.responseText);
+			return this.responseText;
+		}
+	};
+	xhttp.open("POST", clipAddress, true);
+	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhttp.send('value=' + data);
+}	
+
 //send clipboard contents to server
-function sendClipboard()
+function sendClipboard2()
 {
 	let clipAddress = 'http://localhost:5000/text';
 	var xhttp = new XMLHttpRequest();
@@ -284,7 +335,7 @@ function sendClipboard()
 	obsSend.disconnect();
 	document.getElementById('Clipboard').innerHTML = '';
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
-	
+	/*
 	//parse a 'history' response
 	function respHistory(cellid, resp)
 	{
@@ -345,6 +396,7 @@ function sendClipboard()
 			},false);	
 		}	
 	}
+	*/
 }
 
 init();
