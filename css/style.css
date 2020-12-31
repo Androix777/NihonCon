@@ -105,7 +105,7 @@ div.ToolTip
   border: 3px solid transparent;
 }
 
-span.ToolTipText
+div.ToolTipText
 {
   visibility: hidden;
   max-width: 500px;

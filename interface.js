@@ -11,7 +11,6 @@ class Cell
 		this.fTypes[CellFunctions.History] = this.respHistory;
 		this.fTypes[CellFunctions.ToolTip] = this.respTooltip;
 		
-		console.log(func);
 		this.id = id;
 		this.type = type;
 		this.hotkeys = ['hk1', 'hk2', 'hk3'];
@@ -130,13 +129,13 @@ class Cell
 				div.style.backgroundColor = '#99ff99';
 				
 				document.getElementById(this.id + 'Content').appendChild(div);
-				var span = document.createElement('span');
-				span.id = this.id + 'ToolTipText' + pad(i + 1, 2);
-				span.className = 'ToolTipText';
+				var tip = document.createElement('div');
+				tip.id = this.id + 'ToolTipText' + pad(i + 1, 2);
+				tip.className = 'ToolTipText';
 				
 				div.textContent = pResp.ttText[i].word;
-				span.textContent = pResp.ttText[i].toolTip;
-				document.getElementById('NihonCon').appendChild(span);
+				tip.textContent = pResp.ttText[i].toolTip;
+				document.getElementById('NihonCon').appendChild(tip);
 
 				//attach tooltips to mouse
 				var cellid = this.id;
@@ -410,95 +409,6 @@ function init()
 	//we actually still have iframes...
 	//let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
 	//iFrame01.draw(20, 320);
-}
-
-
-//Cell01.func('asd');
-
-//send clipboard contents to server
-function sendClipboard2()
-{
-	let clipAddress = 'http://localhost:5000/text';
-	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() 
-	{
-		if (this.readyState == 4 && this.status == 200) 
-		{
-			console.log('Response: ' + this.responseText);
-			
-			respHistory('Cell01', this.responseText);
-			
-			respTooltips('Cell02', this.responseText);
-		}
-	};
-	xhttp.open("POST", clipAddress, true);
-	xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-	xhttp.send('value=' + document.getElementById('Clipboard').textContent);
-	obsSend.disconnect();
-	document.getElementById('Clipboard').innerHTML = '';
-	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
-	/*
-	//parse a 'history' response
-	function respHistory(cellid, resp)
-	{
-		document.getElementById(cellid + 'Content').appendChild(document.createTextNode(resp));
-		document.getElementById(cellid + 'Content').appendChild(document.createElement("br"));
-	}
-	
-	//parse a 'tooltip' response
-	function respTooltips(cellid, resp)
-	{
-		//example response for testing
-		var exResp = '{ "ttText" : [' +
-			'{ "word" : "本当", "toolTip" : "ほんとう is a very complicated word that requires a very long text explanation which will have to be formatted accordingly" },' +
-			'{ "word" : "に", "toolTip" : "に" },' +
-			'{ "word" : "成功", "toolTip" : "せいこう" },' +
-			'{ "word" : "！", "toolTip" : "!"} ]}';
-			
-		//resp = exResp;
-		var pResp = JSON.parse(resp);
-		
-		//clean existing
-		let j = 1;
-		while(document.getElementById(cellid + 'ToolTip' + pad(j, 2)))
-		{
-			document.getElementById(cellid + 'ToolTip' + pad(j, 2)).remove();
-			document.getElementById(cellid + 'ToolTipText' + pad(j, 2)).remove();
-			j++;
-		}
-		
-		//create tooltips
-		for(let i = 0; i < pResp.ttText.length; i++)
-		{
-	
-			var div = document.createElement('div');
-			div.id = cellid + 'ToolTip' + pad(i + 1, 2);
-			div.className = 'ToolTip';
-			div.style.backgroundColor = '#99ff99';
-			
-			document.getElementById(cellid + 'Content').appendChild(div);
-			var span = document.createElement('span');
-			span.id = cellid + 'ToolTipText' + pad(i + 1, 2);
-			span.className = 'ToolTipText';
-			
-			div.textContent = pResp.ttText[i].word;
-			span.textContent = pResp.ttText[i].toolTip;
-			document.getElementById('NihonCon').appendChild(span);
-
-			//attach tooltips to mouse
-			div.addEventListener('mousemove', function(e)
-			{
-				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.left = (e.pageX - 20) + 'px';
-				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.top = (e.pageY + 20) + 'px';
-				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.visibility = 'visible';
-			},false);		
-			div.addEventListener('mouseleave', function(e)
-			{
-				document.getElementById(cellid + 'ToolTipText' + pad(i + 1, 2)).style.visibility = 'hidden';
-			},false);	
-		}	
-	}
-	*/
 }
 
 init();
