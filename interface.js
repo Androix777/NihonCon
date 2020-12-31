@@ -102,11 +102,14 @@ class Cell
 		{
 			console.log(response);
 			//example response for testing
-			var exResp = '{ "ttText" : [' +
-				'{ "word" : "本当", "toolTip" : "ほんとう is a very complicated word that requires a very long text explanation which will have to be formatted accordingly" },' +
-				'{ "word" : "に", "toolTip" : "に" },' +
-				'{ "word" : "成功", "toolTip" : "せいこう" },' +
-				'{ "word" : "！", "toolTip" : "!"} ]}';
+			var exResp = '{"ttText":[' +
+			'{"toolTip":[' +
+				'{"description":["descr11"],"kana":"kana11"},' +
+				'{"description":["descr12","descr13","descr14"],"kana":"kana12"}],' +
+			'"word":"word1"},' +
+			'{"toolTip":[' +
+				'{"description":["descr21"],"kana":"kana21"}],' +
+			'"word":"word2"}]}';
 				
 			//resp = exResp;
 			var pResp = JSON.parse(response);
@@ -134,9 +137,38 @@ class Cell
 				tip.className = 'ToolTipText';
 				
 				div.textContent = pResp.ttText[i].word;
-				tip.textContent = pResp.ttText[i].toolTip;
+				
+				var iHTML = '';
+				for(let k = 0; k < pResp.ttText[i].toolTip.length; k++)
+				{
+					console.log(pResp.ttText[i].toolTip.length);
+					
+					iHTML += '<span class = "ttWord">';
+					iHTML += pResp.ttText[i].word;
+					iHTML += '</span>';
+					iHTML += ' ';
+					iHTML += '[<span class = "ttKana">';
+					iHTML += pResp.ttText[i].toolTip[k].kana;
+					iHTML += '</span>]';
+					iHTML += ' ';
+					for(let l = 0; l < pResp.ttText[i].toolTip[k].description.length; l++)
+					{
+						iHTML += '<span class = "ttMisc">';
+						iHTML += '(' + (l + 1) + ')';
+						iHTML += '</span>';
+						iHTML += ' ';
+						iHTML += '<span class = "ttDescr">';
+						iHTML += pResp.ttText[i].toolTip[k].description[l];
+						iHTML += '</span>';
+						iHTML += '/';
+					}
+					iHTML = iHTML.slice(0, -1);
+					iHTML += '<br>';
+				}
+				tip.innerHTML += iHTML;
+				//tip.textContent = pResp.ttText[i].toolTip;
 				document.getElementById('NihonCon').appendChild(tip);
-
+				
 				//attach tooltips to mouse
 				var cellid = this.id;
 				div.addEventListener('mousemove', function(e)

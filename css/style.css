@@ -109,13 +109,34 @@ div.ToolTipText
 {
   visibility: hidden;
   max-width: 500px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
+  background-color: #f5f5dc;
+  color: #000000;
+  text-align: left;
   padding: 5px 5px;
   display: inline-block;
+  border: 1px solid black;
   /* border-radius: 6px; */ /* rounded edges */
 
   position: fixed;
   z-index: 10;
+}
+
+span.ttWord
+{
+	color: #8b0000; 
+}
+
+span.ttKana
+{
+	color: #22b14c;
+}
+
+span.ttDescr
+{
+	color: #000000;
+}
+
+span.ttMisc
+{
+	color: #0091ea;
 }
