@@ -56,6 +56,7 @@ class Cell
 		var cellX = document.createElement('button');
 		cellX.onclick = () => 
 		{
+			Cells.splice(Cells.indexOf(this), 1);
 			this.undraw();
 		}
 		cellX.className = 'CellX';
