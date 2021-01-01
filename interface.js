@@ -1,6 +1,6 @@
 //cell types (maybe?..)
 const CellTypes = Object.freeze({'Text': 1, 'iFrame': 2});
-const CellFunctions = Object.freeze({'History': 1, 'ToolTip': 2});
+const CellFunctions = Object.freeze({'Nothing': 1, 'History': 2, 'ToolTip': 3});
 
 //cell class
 class Cell
@@ -8,6 +8,7 @@ class Cell
 	constructor(id, type, func)
 	{
 		this.fTypes = {};
+		this.fTypes[CellFunctions.Nothing] = null;
 		this.fTypes[CellFunctions.History] = this.respHistory;
 		this.fTypes[CellFunctions.ToolTip] = this.respTooltip;
 		
@@ -53,7 +54,10 @@ class Cell
 		}
 		
 		var cellX = document.createElement('button');
-		cellX.onclick = () => this.undraw();
+		cellX.onclick = () => 
+		{
+			this.undraw();
+		}
 		cellX.className = 'CellX';
 		cellX.innerHTML = 'X';
 		document.getElementById(this.id + 'Top').appendChild(cellX);
@@ -138,7 +142,7 @@ class Cell
 				
 				div.textContent = pResp.ttText[i].word;
 				
-				var iHTML = '';
+				let iHTML = '';
 				if(pResp.ttText[i].toolTip) 
 				{
 					for(let k = 0; k < pResp.ttText[i].toolTip.length; k++)
@@ -194,11 +198,6 @@ class Cell
 		}
 		request.then(handleResponse).catch(handleError);
 	}
-}
-
-function testFunc(str = 'none')
-{
-	console.log('testFunc called with: ' + str);
 }
 
 //get clipboard, return it, clear it, nothing else
@@ -368,8 +367,10 @@ const autoSend = function(mutationsList, observer)
 {
 	console.log('called autoSend()');
 	clip = getClipboard();
-	Cells[0].func(sendData('http://localhost:5000/text', clip));
-	Cells[1].func(sendData('http://localhost:5000/text', clip));
+	Cells.forEach((item, index) =>
+	{
+		item.func(sendData('http://localhost:5000/text', clip));
+	});
 }
  
 //drag cells!
@@ -413,6 +414,41 @@ const obsSend = new MutationObserver(autoSend);
 
 var Cells = new Array();
 
+//create new cell
+function newCellPopup()
+{
+	modal = document.createElement('div');
+	modal.className = 'Modal';
+	document.getElementById('NihonCon').appendChild(modal);
+	mWindow = document.createElement('div');
+	mWindow.className = 'ModalWindow';
+	iID = document.createElement('input');
+	iID.id = 'iID';
+	iID.value = 'Cell01';
+	mWindow.appendChild(iID);
+	iType = document.createElement('select');
+	iType.id = 'iType';
+	Object.keys(CellFunctions).forEach((key) =>
+	{
+		opt = document.createElement('option');
+		opt.value = key;
+		opt.textContent = key;
+		iType.appendChild(opt);
+	});
+	mWindow.appendChild(iType);
+	cBtn = document.createElement('button');
+	cBtn.textContent = 'Create';
+	cBtn.onclick = () =>
+	{
+		console.log(CellFunctions[iType.options[iType.selectedIndex].value]);
+		Cells.push(new Cell(iID.value, CellTypes.Text, CellFunctions[iType.options[iType.selectedIndex].value]));
+		Cells[Cells.length - 1].draw();
+		modal.remove();
+	}
+	mWindow.appendChild(cBtn);
+	modal.appendChild(mWindow);
+}
+
 //initializing
 function init()
 {
@@ -423,19 +459,20 @@ function init()
 		getClipboardContents();
 	}, 5000);
 	*/
-	console.log(Cell);
+
+	newButton = document.createElement('button');
+	newButton.className = 'NewButton';
+	newButton.textContent = '+';
+	newButton.onclick = newCellPopup;
+	document.getElementById('NihonCon').appendChild(newButton);
 	
-	let Cell01 = new Cell('Cell01', CellTypes.Text, CellFunctions.History);
+	let Cell01 = new Cell('testHistory', CellTypes.Text, CellFunctions.History);
 	Cells.push(Cell01);
-	Cells[0].draw(20, 20);
+	Cells[0].draw(20, 320);
 	
-	let Cell02 = new Cell('Cell02', CellTypes.Text, CellFunctions.ToolTip);
+	let Cell02 = new Cell('testToolTip', CellTypes.Text, CellFunctions.ToolTip);
 	Cells.push(Cell02);
-	Cells[1].draw(670, 20);
-	
-	let Cell03 = new Cell('Cell03', CellTypes.Text, null);
-	Cells.push(Cell03);
-	Cells[2].draw(20, 240);
+	Cells[1].draw(670, 320);
 	
 	//obsScroll.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
 	
