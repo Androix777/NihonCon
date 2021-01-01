@@ -138,7 +138,11 @@ class Cell
 				
 				div.textContent = pResp.ttText[i].word;
 				
+				//if there is no tooltip, skip everything
+				if(!pResp.ttText[i].toolTip) continue;
+				
 				var iHTML = '';
+				
 				for(let k = 0; k < pResp.ttText[i].toolTip.length; k++)
 				{
 					console.log(pResp.ttText[i].toolTip.length);
@@ -165,7 +169,7 @@ class Cell
 					iHTML = iHTML.slice(0, -1);
 					iHTML += '<br>';
 				}
-				tip.innerHTML += iHTML;
+				tip.innerHTML = iHTML;
 				//tip.textContent = pResp.ttText[i].toolTip;
 				document.getElementById('NihonCon').appendChild(tip);
 				
