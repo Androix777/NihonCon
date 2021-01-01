@@ -131,8 +131,14 @@ class Cell
 				tip.id = this.id + 'ToolTipText' + pad(i + 1, 2);
 				tip.className = 'ToolTipText';
 				
-				div.textContent = pResp.ttText[i].word;
-				
+				if(pResp.ttText[i].toolTip && pResp.ttText[i].toolTip[0].kana)
+				{
+					div.innerHTML = '<ruby>' + pResp.ttText[i].word + '<rt>' + pResp.ttText[i].toolTip[0].kana + '</rt></ruby>';
+				}
+				else
+				{
+					div.textContent = pResp.ttText[i].word;
+				}
 				let iHTML = '';
 				if(pResp.ttText[i].toolTip) 
 				{
