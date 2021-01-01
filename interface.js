@@ -138,39 +138,40 @@ class Cell
 				
 				div.textContent = pResp.ttText[i].word;
 				
-				//if there is no tooltip, skip everything
-				if(!pResp.ttText[i].toolTip) continue;
-				
 				var iHTML = '';
-				
-				for(let k = 0; k < pResp.ttText[i].toolTip.length; k++)
+				if(pResp.ttText[i].toolTip) 
 				{
-					console.log(pResp.ttText[i].toolTip.length);
-					
-					iHTML += '<span class = "ttWord">';
-					iHTML += pResp.ttText[i].word;
-					iHTML += '</span>';
-					iHTML += ' ';
-					iHTML += '[<span class = "ttKana">';
-					iHTML += pResp.ttText[i].toolTip[k].kana;
-					iHTML += '</span>]';
-					iHTML += ' ';
-					for(let l = 0; l < pResp.ttText[i].toolTip[k].description.length; l++)
+					for(let k = 0; k < pResp.ttText[i].toolTip.length; k++)
 					{
-						iHTML += '<span class = "ttMisc">';
-						iHTML += '(' + (l + 1) + ')';
+						iHTML += '<span class = "ttWord">';
+						iHTML += pResp.ttText[i].word;
 						iHTML += '</span>';
 						iHTML += ' ';
-						iHTML += '<span class = "ttDescr">';
-						iHTML += pResp.ttText[i].toolTip[k].description[l];
-						iHTML += '</span>';
-						iHTML += '/';
+						iHTML += '[<span class = "ttKana">';
+						iHTML += pResp.ttText[i].toolTip[k].kana;
+						iHTML += '</span>]';
+						iHTML += ' ';
+						for(let l = 0; l < pResp.ttText[i].toolTip[k].description.length; l++)
+						{
+							iHTML += '<span class = "ttMisc">';
+							iHTML += '(' + (l + 1) + ')';
+							iHTML += '</span>';
+							iHTML += ' ';
+							iHTML += '<span class = "ttDescr">';
+							iHTML += pResp.ttText[i].toolTip[k].description[l];
+							iHTML += '</span>';
+							iHTML += '/';
+						}
+						iHTML = iHTML.slice(0, -1);
+						iHTML += '<br>';
 					}
-					iHTML = iHTML.slice(0, -1);
-					iHTML += '<br>';
+					tip.innerHTML = iHTML;
 				}
-				tip.innerHTML = iHTML;
-				//tip.textContent = pResp.ttText[i].toolTip;
+				else
+				{
+					tip.innerHTML = '<span class = "ttWord">No tooltip</span>';
+				}
+				
 				document.getElementById('NihonCon').appendChild(tip);
 				
 				//attach tooltips to mouse
