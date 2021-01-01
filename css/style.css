@@ -33,18 +33,11 @@ div.Cell
 div.CellHead
 {
 	height: 30px;
-	width: 80%;
+	width: 90%;
 	background-color: #22b14c;
 	cursor: move;
 	z-index: 2;
 	float:left;
-}
-
-select.Hotkey
-{
-	height: 30px;
-	width: 10%;
-	float: left;
 }
 
 div.CellContent

@@ -1,11 +1,17 @@
-//cell types (maybe?..)
-const CellTypes = Object.freeze({'Text': 1, 'iFrame': 2});
+
+//cell functions
 const CellFunctions = Object.freeze({'Nothing': 1, 'History': 2, 'ToolTip': 3});
 
-//cell class
+//observers are global
+const obsSend = new MutationObserver(autoSend);
+
+//array of cells
+var Cells = new Array();
+
+//cannot access cell class before initialization
 class Cell
 {
-	constructor(id, type, func)
+	constructor(id, func)
 	{
 		this.fTypes = {};
 		this.fTypes[CellFunctions.Nothing] = null;
@@ -13,8 +19,6 @@ class Cell
 		this.fTypes[CellFunctions.ToolTip] = this.respTooltip;
 		
 		this.id = id;
-		this.type = type;
-		this.hotkeys = ['hk1', 'hk2', 'hk3'];
 		this.func = this.fTypes[func];
 	}
 	draw(x = 20, y = 20)
@@ -37,21 +41,6 @@ class Cell
 		cellHead.className = 'CellHead';
 		cellHead.innerHTML = this.id;
 		document.getElementById(this.id + 'Top').appendChild(cellHead);
-		
-		//hotkey
-		var cellSelect = document.createElement('select');
-		cellSelect.id = this.id + 'Hotkey';
-		cellSelect.className = 'Hotkey';
-		document.getElementById(this.id + 'Top').appendChild(cellSelect);
-		
-		this.hotkeys.forEach(fillHotkeys, this);
-		function fillHotkeys(item, index)
-		{
-			var opt = document.createElement('option');
-			opt.value = 'index:' + index + ' item:' + item;
-			opt.innerHTML = 'index:' + index + ' item:' + item;
-			document.getElementById(this.id + 'Hotkey').appendChild(opt);
-		}
 		
 		var cellX = document.createElement('button');
 		cellX.onclick = () => 
@@ -93,6 +82,7 @@ class Cell
 			console.log(response);
 			document.getElementById(this.id + 'Content').appendChild(document.createTextNode(response));
 			document.getElementById(this.id + 'Content').appendChild(document.createElement("br"));
+			document.getElementById(this.id + 'Content').scrollTop = document.getElementById(this.id + 'Content').scrollHeight;
 		}
 		const handleError = (response) =>
 		{
@@ -201,6 +191,29 @@ class Cell
 	}
 }
 
+//call init() now
+init();
+
+//create buttons, link observers, stuff like that
+function init()
+{
+	newButton = document.createElement('button');
+	newButton.className = 'NewButton';
+	newButton.textContent = '+';
+	newButton.onclick = newCellPopup;
+	document.getElementById('NihonCon').appendChild(newButton);
+	
+	let Cell01 = new Cell('testHistory', CellFunctions.History);
+	Cells.push(Cell01);
+	Cells[0].draw(20, 320);
+	
+	let Cell02 = new Cell('testToolTip', CellFunctions.ToolTip);
+	Cells.push(Cell02);
+	Cells[1].draw(670, 320);
+	
+	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+}
+
 //get clipboard, return it, clear it, nothing else
 function getClipboard()
 {
@@ -232,6 +245,100 @@ async function sendData(url, data)
 		}
 	});
 }	
+
+//leading zeros
+function pad(num, size) 
+{
+	num = num.toString();
+	while (num.length < size) num = "0" + num;
+	return num;
+}
+
+//send data from hidden div on change
+function autoSend(mutationsList, observer)
+{
+	console.log('called autoSend()');
+	clip = getClipboard();
+	Cells.forEach((item, index) =>
+	{
+		item.func(sendData('http://localhost:5000/text', clip));
+	});
+}
+ 
+//drag cells!
+function dragElement(elem)
+{
+	var p1 = 0, p2 = 0, p3 = 0, p4 = 0;
+	if(document.getElementById(elem.id + 'Head'))
+	{
+		document.getElementById(elem.id + 'Head').onmousedown = dragMouseDown;
+	}
+	function dragMouseDown(e)
+	{
+		e = e || window.event;
+		e.preventDefault();
+		p3 = e.clientX;
+		p4 = e.clientY;
+		document.onmouseup = closeDragElement;
+		document.onmousemove = elementMove;
+	}
+	function elementMove(e)
+	{
+		e = e || window.event;
+		e.preventDefault();
+		p1 = p3 - e.clientX;
+		p2 = p4 - e.clientY;
+		p3 = e.clientX;
+		p4 = e.clientY;
+		elem.style.top = (elem.offsetTop - p2) + 'px';
+		elem.style.left = (elem.offsetLeft - p1) + 'px';
+	}
+	function closeDragElement()
+	{
+		document.onmouseup = null;
+		document.onmousemove = null;
+	}
+}
+
+//create new cell
+function newCellPopup()
+{
+	modal = document.createElement('div');
+	modal.className = 'Modal';
+	document.getElementById('NihonCon').appendChild(modal);
+	mWindow = document.createElement('div');
+	mWindow.className = 'ModalWindow';
+	iID = document.createElement('input');
+	iID.id = 'iID';
+	iID.value = 'Cell01';
+	mWindow.appendChild(iID);
+	iType = document.createElement('select');
+	iType.id = 'iType';
+	Object.keys(CellFunctions).forEach((key) =>
+	{
+		opt = document.createElement('option');
+		opt.value = key;
+		opt.textContent = key;
+		iType.appendChild(opt);
+	});
+	mWindow.appendChild(iType);
+	cBtn = document.createElement('button');
+	cBtn.textContent = 'Create';
+	cBtn.onclick = () =>
+	{
+		console.log(CellFunctions[iType.options[iType.selectedIndex].value]);
+		Cells.push(new Cell(iID.value, CellFunctions[iType.options[iType.selectedIndex].value]));
+		Cells[Cells.length - 1].draw();
+		modal.remove();
+	}
+	mWindow.appendChild(cBtn);
+	modal.appendChild(mWindow);
+}
+
+
+//unused:
+
+/*
 
 //iframe cell class
 class iFrameCell extends Cell
@@ -299,27 +406,20 @@ class iFrameCell extends Cell
 	}
 }
 
-//read clipboard directly?
-//seems there is no way to detect copy from outside the page
-//aside from reading clipboard every x seconds...
-async function getClipboardContents() 
+//listen to keypresses
+document.addEventListener('keydown', keyPressEvents);
+function keyPressEvents(e)
 {
-  try 
-  {
-    const text = await navigator.clipboard.readText();
-    console.log('Pasted content: ', text);
-  } catch (err) 
-  {
-    console.error('Failed to read clipboard contents: ', err);
-  }
-}
-
-//leading zeros
-function pad(num, size) 
-{
-	num = num.toString();
-	while (num.length < size) num = "0" + num;
-	return num;
+	switch(e.code)
+	{
+		case 'Digit1':
+			Cell02Content.textContent = window.getSelection().toString();
+			break;
+		case 'Digit2':
+			//iFrame01Content.src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
+			document.getElementById('iFrame01Content').src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
+			break;
+	}
 }
 
 //collect all hotkeys
@@ -340,151 +440,17 @@ function gatherHotkeys()
 	}
 }
 
-//listen to keypresses
-document.addEventListener('keydown', keyPressEvents);
-function keyPressEvents(e)
+//read clipboard directly?
+//does not work in firefox
+async function getClipboardContents() 
 {
-	switch(e.code)
-	{
-		case 'Digit1':
-			Cell02Content.textContent = window.getSelection().toString();
-			break;
-		case 'Digit2':
-			//iFrame01Content.src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
-			document.getElementById('iFrame01Content').src = 'https://jisho.org' + '/search/' + window.getSelection().toString();
-			break;
-	}
+  try 
+  {
+    const text = await navigator.clipboard.readText();
+    console.log('Pasted content: ', text);
+  } catch (err) 
+  {
+    console.error('Failed to read clipboard contents: ', err);
+  }
 }
-
-//scroll Cell01 to bottom
-const scrollToBottom = function (mutationsList, observer)
-{
-	hist = document.getElementById('Cell01Content');
-	hist.scrollTop = hist.scrollHeight;
-}
-
-//send data from hidden div on change
-const autoSend = function(mutationsList, observer)
-{
-	console.log('called autoSend()');
-	clip = getClipboard();
-	Cells.forEach((item, index) =>
-	{
-		item.func(sendData('http://localhost:5000/text', clip));
-	});
-}
- 
-//drag cells!
-function dragElement(elem)
-{
-	var p1 = 0, p2 = 0, p3 = 0, p4 = 0;
-	if(document.getElementById(elem.id + 'Head'))
-	{
-		document.getElementById(elem.id + 'Head').onmousedown = dragMouseDown;
-	}
-	function dragMouseDown(e)
-	{
-		e = e || window.event;
-		e.preventDefault();
-		p3 = e.clientX;
-		p4 = e.clientY;
-		document.onmouseup = closeDragElement;
-		document.onmousemove = elementMove;
-	}
-	function elementMove(e)
-	{
-		e = e || window.event;
-		e.preventDefault();
-		p1 = p3 - e.clientX;
-		p2 = p4 - e.clientY;
-		p3 = e.clientX;
-		p4 = e.clientY;
-		elem.style.top = (elem.offsetTop - p2) + 'px';
-		elem.style.left = (elem.offsetLeft - p1) + 'px';
-	}
-	function closeDragElement()
-	{
-		document.onmouseup = null;
-		document.onmousemove = null;
-	}
-}
-
-//observers are global
-const obsScroll = new MutationObserver(scrollToBottom);
-const obsSend = new MutationObserver(autoSend);
-
-var Cells = new Array();
-
-//create new cell
-function newCellPopup()
-{
-	modal = document.createElement('div');
-	modal.className = 'Modal';
-	document.getElementById('NihonCon').appendChild(modal);
-	mWindow = document.createElement('div');
-	mWindow.className = 'ModalWindow';
-	iID = document.createElement('input');
-	iID.id = 'iID';
-	iID.value = 'Cell01';
-	mWindow.appendChild(iID);
-	iType = document.createElement('select');
-	iType.id = 'iType';
-	Object.keys(CellFunctions).forEach((key) =>
-	{
-		opt = document.createElement('option');
-		opt.value = key;
-		opt.textContent = key;
-		iType.appendChild(opt);
-	});
-	mWindow.appendChild(iType);
-	cBtn = document.createElement('button');
-	cBtn.textContent = 'Create';
-	cBtn.onclick = () =>
-	{
-		console.log(CellFunctions[iType.options[iType.selectedIndex].value]);
-		Cells.push(new Cell(iID.value, CellTypes.Text, CellFunctions[iType.options[iType.selectedIndex].value]));
-		Cells[Cells.length - 1].draw();
-		modal.remove();
-	}
-	mWindow.appendChild(cBtn);
-	modal.appendChild(mWindow);
-}
-
-//initializing
-function init()
-{
-	//does not work in firefox
-	/*
-	setInterval(function()
-	{
-		getClipboardContents();
-	}, 5000);
-	*/
-
-	newButton = document.createElement('button');
-	newButton.className = 'NewButton';
-	newButton.textContent = '+';
-	newButton.onclick = newCellPopup;
-	document.getElementById('NihonCon').appendChild(newButton);
-	
-	let Cell01 = new Cell('testHistory', CellTypes.Text, CellFunctions.History);
-	Cells.push(Cell01);
-	Cells[0].draw(20, 320);
-	
-	let Cell02 = new Cell('testToolTip', CellTypes.Text, CellFunctions.ToolTip);
-	Cells.push(Cell02);
-	Cells[1].draw(670, 320);
-	
-	//obsScroll.observe(document.getElementById('Cell01Content'), {attributes: true, childList: true, subtree: true});
-	
-	
-	
-	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
-	
-	//we actually still have iframes...
-	//let iFrame01 = new iFrameCell('iFrame01', CellTypes.iFrame, 'https://jisho.org');
-	//iFrame01.draw(20, 320);
-}
-
-init();
-
+*/
