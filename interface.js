@@ -88,6 +88,7 @@ class Cell
 			console.log(response);
 			document.getElementById(this.id + 'Content').appendChild(document.createTextNode(response));
 			document.getElementById(this.id + 'Content').appendChild(document.createElement("br"));
+			document.getElementById(this.id + 'Content').appendChild(document.createElement("br"));
 			document.getElementById(this.id + 'Content').scrollTop = document.getElementById(this.id + 'Content').scrollHeight;
 		}
 		const handleError = (response) =>
@@ -131,6 +132,7 @@ class Cell
 				div.id = this.id + 'ToolTip' + pad(i + 1, 2);
 				div.className = 'ToolTip';
 				div.style.backgroundColor = '#99ff99';
+				div.style.color = '#000000';
 				
 				document.getElementById(this.id + 'Content').appendChild(div);
 				var tip = document.createElement('div');
@@ -224,6 +226,48 @@ function init()
 	Cells[1].draw(670, 320);
 	
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
+	
+	setTheme();
+}
+
+
+//will make themes later
+function setTheme()
+{
+	bodyC = '#111111';
+	backC = '#242424';
+	headC = '#44aa77';
+	cellC = '#121212';
+	cellBC = '#44aa77';
+	fontC = '#ffffff';
+	ttC = '#225533';
+	
+	document.querySelectorAll('body').forEach((item, index) =>
+	{
+		item.style.backgroundColor = bodyC;
+	});
+	
+	document.querySelectorAll('div.NihonCon').forEach((item, index) =>
+	{
+		item.style.backgroundColor = backC;
+	});
+	
+	document.querySelectorAll('div.CellHead').forEach((item, index) =>
+	{
+		item.style.backgroundColor = headC;
+	});
+	
+	document.querySelectorAll('div.Cell').forEach((item, index) =>
+	{
+		item.style.backgroundColor = cellC;
+		item.style.color = fontC;
+		item.style.borderColor = cellBC;
+	});
+	
+	document.querySelectorAll('div.ToolTip').forEach((item, index) =>
+	{
+		item.style.backgroundColor = ttC;
+	});
 }
 
 //get clipboard, return it, clear it, nothing else
