@@ -35,9 +35,16 @@ def GetTranslation(tokens):
 def hello_world():
     return 'Hello World!'
 
+@app.route('/history', methods=['GET', 'POST'])
+def history():
+    if request.method == 'GET':
+        return 'No'
 
-@app.route('/text', methods=['GET', 'POST'])
-def index():
+    if request.method == 'POST':
+        return request.form.get('value')
+
+@app.route('/tooltip', methods=['GET', 'POST'])
+def tooltip():
     if request.method == 'GET':
         return 'No'
 

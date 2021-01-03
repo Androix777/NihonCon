@@ -18,8 +18,14 @@ class Cell
 		this.fTypes[CellFunctions.History] = this.respHistory;
 		this.fTypes[CellFunctions.ToolTip] = this.respTooltip;
 		
+		this.urls = {};
+		this.urls[CellFunctions.Nothing] = '/';
+		this.urls[CellFunctions.History] = '/history';
+		this.urls[CellFunctions.ToolTip] = '/tooltip';
+		
 		this.id = id;
 		this.func = this.fTypes[func];
+		this.url = this.urls[func];
 	}
 	draw(x = 20, y = 20)
 	{
@@ -267,7 +273,7 @@ function autoSend(mutationsList, observer)
 	clip = getClipboard();
 	Cells.forEach((item, index) =>
 	{
-		item.func(sendData('http://localhost:5000/text', clip));
+		item.func(sendData('http://localhost:5000' + item.url, clip));
 	});
 }
  
