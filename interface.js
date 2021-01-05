@@ -217,6 +217,22 @@ function init()
 	newButton.onclick = newCellPopup;
 	document.getElementById('NihonCon').appendChild(newButton);
 	
+	themeButton = document.createElement('button');
+	themeButton.className = 'ThemeButton';
+	themeButton.textContent = 'Theme';
+	themeButton.onclick = () =>
+	{
+		if(document.getElementById('Theme').innerHTML == '@import url("./css/style.css")')
+		{
+			setTheme('dark');
+		}
+		else
+		{
+			setTheme('style');
+		}
+	};
+	document.getElementById('NihonCon').appendChild(themeButton);
+	
 	let Cell01 = new Cell('testHistory', CellFunctions.History);
 	Cells.push(Cell01);
 	Cells[0].draw(20, 320);
@@ -226,48 +242,13 @@ function init()
 	Cells[1].draw(670, 320);
 	
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
-	
-	setTheme();
 }
 
 
 //will make themes later
-function setTheme()
+function setTheme(theme)
 {
-	bodyC = '#111111';
-	backC = '#242424';
-	headC = '#44aa77';
-	cellC = '#121212';
-	cellBC = '#44aa77';
-	fontC = '#ffffff';
-	ttC = '#225533';
-	
-	document.querySelectorAll('body').forEach((item, index) =>
-	{
-		item.style.backgroundColor = bodyC;
-	});
-	
-	document.querySelectorAll('div.NihonCon').forEach((item, index) =>
-	{
-		item.style.backgroundColor = backC;
-	});
-	
-	document.querySelectorAll('div.CellHead').forEach((item, index) =>
-	{
-		item.style.backgroundColor = headC;
-	});
-	
-	document.querySelectorAll('div.Cell').forEach((item, index) =>
-	{
-		item.style.backgroundColor = cellC;
-		item.style.color = fontC;
-		item.style.borderColor = cellBC;
-	});
-	
-	document.querySelectorAll('div.ToolTip').forEach((item, index) =>
-	{
-		item.style.backgroundColor = ttC;
-	});
+	document.getElementById('Theme').innerHTML = '@import url("./css/' + theme + '.css")';
 }
 
 //get clipboard, return it, clear it, nothing else

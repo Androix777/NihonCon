@@ -1,6 +1,11 @@
+body
+{
+	background-color: #111111;
+}
+
 div.NihonCon
 {
-	background-color: #ffffff;
+	background-color: #242424;
 	border-style: solid;
 	border-width: 1px;
 	height: 97%;
@@ -19,6 +24,7 @@ div.Cell
 	width: 600px;
 	border: 1px solid #999999;
 	resize: both;
+	background-color: #121212;
 	
 	display: flex;
 	flex-flow: column;
@@ -34,7 +40,7 @@ div.CellHead
 {
 	height: 30px;
 	width: 90%;
-	background-color: #22b14c;
+	background-color: #44aa77;
 	cursor: move;
 	z-index: 2;
 	float:left;
@@ -44,6 +50,7 @@ div.CellContent
 {
 	flex: 1;
 	overflow: auto;
+	color: #22b14c;
 	/* position: relative; */
 }
 
