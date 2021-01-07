@@ -1,6 +1,6 @@
 
 //cell functions
-const CellFunctions = Object.freeze({'Nothing': 1, 'History': 2, 'ToolTip': 3});
+const CellFunctions = Object.freeze({'Nothing': 1, 'History': 2, 'ToolTip': 3, 'PlainInput': 50});
 
 //observers are global
 const obsSend = new MutationObserver(autoSend);
@@ -205,6 +205,69 @@ class Cell
 	}
 }
 
+class Input
+{
+	constructor(id)
+	{
+		this.id = id;
+	}
+	draw(x = 20, y = 20)
+	{
+		if(document.getElementById(this.id)) return; //already drawn
+		
+		var input = document.createElement('div');
+		input.id = this.id;
+		input.className = 'Input';
+		input.style.left = x + 'px';
+		input.style.top = y + 'px';
+		document.getElementById('NihonCon').appendChild(input);
+		
+		var inputTop = document.createElement('div');
+		inputTop.id = this.id + 'Top';
+		document.getElementById(this.id).appendChild(inputTop);
+		
+		var inputHead = document.createElement('div');
+		inputHead.id = this.id + 'Head';
+		inputHead.className = 'InputHead';
+		inputHead.innerHTML = this.id;
+		document.getElementById(this.id + 'Top').appendChild(inputHead);
+		
+		var inputX = document.createElement('button');
+		inputX.onclick = () => 
+		{
+			this.undraw();
+		}
+		inputX.className = 'CellX';
+		inputX.innerHTML = 'X';
+		document.getElementById(this.id + 'Top').appendChild(inputX);
+		
+		var inputContent = document.createElement('textarea');
+		inputContent.id = this.id + 'Content';
+		inputContent.className = 'InputContent';
+		document.getElementById(this.id).appendChild(inputContent);
+		
+		
+		var inputControls = document.createElement('div');
+		inputControls.id = this.id + 'Controls';
+		document.getElementById(this.id).appendChild(inputControls);
+		
+		var sendButton = document.createElement('button');
+		sendButton.onclick = () =>
+		{
+			inputSend(inputContent.value);
+		}
+		sendButton.innerHTML = 'Send';
+		inputControls.appendChild(sendButton);
+		
+		dragElement(document.getElementById(this.id));
+	}
+	undraw()
+	{
+		document.getElementById(this.id).remove();
+	}
+}
+	
+
 //call init() now
 init();
 
@@ -240,6 +303,9 @@ function init()
 	let Cell02 = new Cell('testToolTip', CellFunctions.ToolTip);
 	Cells.push(Cell02);
 	Cells[1].draw(670, 320);
+	
+	let Input01 = new Input('testInput', CellFunctions.PlainInput);
+	Input01.draw(670, 20);
 	
 	obsSend.observe(document.getElementById('Clipboard'), {attributes: true, childList: true, subtree: true});
 }
@@ -301,7 +367,16 @@ function autoSend(mutationsList, observer)
 		item.func(sendData('http://localhost:5000' + item.url, clip));
 	});
 }
- 
+
+//send from input
+function inputSend(input)
+{
+	Cells.forEach((item, index) =>
+	{
+		item.func(sendData('http://localhost:5000' + item.url, input));
+	});
+}
+
 //drag cells!
 function dragElement(elem)
 {

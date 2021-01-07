@@ -47,6 +47,43 @@ div.CellContent
 	/* position: relative; */
 }
 
+div.Input
+{
+	min-height: 100px;
+	min-width: 300px;
+	height: 200px;
+	width: 600px;
+	border: 1px solid #999999;
+	resize: both;
+	
+	display: flex;
+	flex-flow: column;
+	align-items: stretch;
+	
+	overflow: hidden;
+	position: absolute;
+	
+	z-index: 0;
+}
+
+div.InputHead
+{
+	height: 30px;
+	width: 90%;
+	background-color: #983432;
+	cursor: move;
+	z-index: 2;
+	float:left;
+}
+
+textarea.InputContent
+{
+	flex: 1;
+	overflow: auto;
+	resize: none;
+	/* position: relative; */
+}
+
 div.iFrameCell
 {
 	min-height: 300px;
