@@ -4,3 +4,5 @@ NHC/venv/
 NHC/__pycache__/
 
 NHC/app/__pycache__/
+
+NHC/app.db
