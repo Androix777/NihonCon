@@ -1,14 +1,9 @@
-body
-{
-	background-color: #111111;
-}
-
 div.NihonCon
 {
-	background-color: #242424;
+	background-color: #ffffff;
 	border-style: solid;
 	border-width: 1px;
-	height: 97%;
+	height: 94%;
 	width: 98%;
 	padding: 5px;
 	position: relative;
@@ -24,7 +19,6 @@ div.Cell
 	width: 600px;
 	border: 1px solid #999999;
 	resize: both;
-	background-color: #121212;
 	
 	display: flex;
 	flex-flow: column;
@@ -40,7 +34,7 @@ div.CellHead
 {
 	height: 30px;
 	width: 90%;
-	background-color: #44aa77;
+	background-color: #22b14c;
 	cursor: move;
 	z-index: 2;
 	float:left;
@@ -50,7 +44,43 @@ div.CellContent
 {
 	flex: 1;
 	overflow: auto;
-	color: #22b14c;
+	/* position: relative; */
+}
+
+div.Input
+{
+	min-height: 100px;
+	min-width: 300px;
+	height: 200px;
+	width: 600px;
+	border: 1px solid #999999;
+	resize: both;
+	
+	display: flex;
+	flex-flow: column;
+	align-items: stretch;
+	
+	overflow: hidden;
+	position: absolute;
+	
+	z-index: 0;
+}
+
+div.InputHead
+{
+	height: 30px;
+	width: 90%;
+	background-color: #983432;
+	cursor: move;
+	z-index: 2;
+	float:left;
+}
+
+textarea.InputContent
+{
+	flex: 1;
+	overflow: auto;
+	resize: none;
 	/* position: relative; */
 }
 

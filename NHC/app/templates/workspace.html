@@ -1,0 +1,7 @@
+{% extends "main.html" %}
+
+{% block content %}
+	<div hidden id = 'Clipboard' class = 'Clipboard'></div>
+	<div class = 'NihonCon' id = 'NihonCon'></div>
+	<script src = "{{ url_for('static', filename='js/interface.js')}}"></script>
+{% endblock %}

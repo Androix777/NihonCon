@@ -34,11 +34,12 @@ def GetTranslation(tokens):
     return jsonify({'ttText': allWords})
 
 
-#end
+from flask_login import LoginManager
 
 app = Flask(__name__)
 CORS(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
+login = LoginManager(app)
 
 from app import routes, models
