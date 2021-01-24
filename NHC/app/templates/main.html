@@ -10,14 +10,18 @@
 	</head>
 	<body>
 	<div>
-		{% if login %}
-		({{login}})
+		{% if not current_user.is_anonymous %}
+		({{current_user.username}})
 		{% else %}
 		(no user)
 		{% endif %}
 		NihonCon: 
 		<a href = '{{url_for("index")}}'>Home</a>
-		<a href = '{{url_for("login")}}'>Login</a>
+		{% if current_user.is_anonymous %}
+		<a href = '{{url_for("login")}}'>Log in</a>
+		{% else %}
+		<a href = '{{url_for("logout")}}'>Log out</a>
+		{% endif %}
 		<a href = '{{url_for("workspace")}}'>Workspace</a>
 	</div>
 	<hr>
