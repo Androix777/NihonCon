@@ -1,0 +1,12 @@
+{% extends "main.html" %}
+
+{% block content %}
+	<h1>User: {{user.username}}</h1>
+	<hr>
+	{{user.username}}'s entries:
+	{% for entry in saved %}
+	<p>
+		Entry:{{entry.text}}
+	</p>
+	{% endfor %}
+{% endblock %}
