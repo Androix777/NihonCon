@@ -1,1 +1,2 @@
 FLASK_APP = nhc.py
+FLASK_DEBUG = 1
