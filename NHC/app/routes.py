@@ -1,5 +1,5 @@
 from app import app, db
-from app import Tokenizer, GetTranslation
+from app.wdproc import Tokenizer, GetTranslation
 from app.forms import LoginForm, RegistrationForm, EditProfileForm
 from app.models import User
 from flask import request, render_template, flash, redirect, url_for
