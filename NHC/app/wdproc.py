@@ -1,15 +1,10 @@
-from flask import Flask
 from flask import jsonify
-from flask_cors import CORS
-from flask import request
 import spacy
 from jamdict import Jamdict
 
 from multiprocessing import Lock
 from multiprocessing.managers import BaseManager
 
-app = Flask(__name__)
-CORS(app)
 lock = Lock()
 nlp = spacy.load("ja_core_news_lg")
 
@@ -30,29 +25,3 @@ def GetTranslation(tokens):
     for word in tokens:
         allWords.append(word)
     return jsonify({'ttText': allWords})
-
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-@app.route('/history', methods=['GET', 'POST'])
-def history():
-    if request.method == 'GET':
-        return 'No'
-
-    if request.method == 'POST':
-        return request.form.get('value')
-
-@app.route('/tooltip', methods=['GET', 'POST'])
-def tooltip():
-    if request.method == 'GET':
-        return 'No'
-
-    if request.method == 'POST':
-        value = request.form.get('value')
-        tokens = Tokenizer(value)
-        return GetTranslation(tokens)
-
-
-if __name__ == '__main__':
-    app.run()
