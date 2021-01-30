@@ -7,6 +7,8 @@ NHC/app/__pycache__/
 
 NHC/app.db
 
+NHC/logs
+
 css
 
 interface.js
