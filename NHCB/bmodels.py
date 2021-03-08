@@ -6,7 +6,15 @@ Base = declarative_base()
 class JapaneseExample(Base):
     __tablename__ = 'japanese_example'
 
-    row_id = Column(Integer, primary_key=True)
-    entry = Column(String, nullable=False)
-    origin = Column(Integer, nullable=False)
+    row_id = Column(Integer, primary_key = True)
+    entry = Column(String, nullable = False)
+    origin = Column(Integer, nullable = False)
     tatoeba_id = Column(Integer)
+    kanji_count = Column(Integer)
+    
+class JapaneseExampleKanji(Base):
+    __tablename__ = 'japanese_example_kanji'
+    
+    row_id = Column(Integer, primary_key = True)
+    kanji = Column(String, nullable = False)
+    japanese_example_row_id = Column(Integer, nullable = False)
