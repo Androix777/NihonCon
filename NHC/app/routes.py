@@ -13,6 +13,10 @@ def index():
 def workspace():
     return render_template('workspace.html', title = 'Workspace')
 
+@app.route('/examples')
+def examples():
+    return render_template('examples.html')
+
 #API
 
 @app.route('/history', methods=['GET', 'POST'])
@@ -24,6 +28,6 @@ def history():
         return request.form.get('value')
     
 @app.route('/get-examples', methods=['POST'])
-def examples():
+def get_examples():
     if request.method == 'POST':
         return jsonify({'examples' : get_sentences_by_kanji(['人', '私'], 2, 1)})

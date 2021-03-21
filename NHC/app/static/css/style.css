@@ -11,6 +11,19 @@ div.NihonCon
 	z-index: 0;
 }
 
+div.Examples
+{
+	background-color: #ffffff;
+	border-style: solid;
+	border-width: 1px;
+	height: 94%;
+	width: 98%;
+	padding: 5px;
+	position: relative;
+	overflow: auto;
+	z-index: 0;
+}
+
 div.Cell
 {
 	min-height: 100px;
