@@ -1,36 +1,13 @@
-from bdatabase import session
-from bmodels import JapaneseExample, JapaneseExampleKanji
-from sqlalchemy import func, tablesample
+from NHCB.bdatabase import session
+from NHCB.bmodels import JapaneseExample, JapaneseExampleKanji
+from sqlalchemy import func, tablesample, select, column
 from sqlalchemy.orm import aliased
 
-def GetRandomSentence():
+def get_random_sentence():
     sample = aliased(JapaneseExample, tablesample(JapaneseExample, 1))
     return session.query(sample).limit(1).first().entry
 
-def GetSentencesByKanjiList(kanjiList, min_kanji = 3, max_unknown_kanji = 1):
-    selected_kanji = session.query(
-        JapaneseExampleKanji
-    ).filter(
-        JapaneseExampleKanji.kanji.in_(kanjiList)
-    ).subquery()
-    
-    selected_examples = session.query(
-        selected_kanji.c.japanese_example_row_id, 
-        func.count(selected_kanji.c.kanji).label('selected_kanji_count')
-    ).group_by(
-        selected_kanji.c.japanese_example_row_id
-    ).subquery()
-        
-    examples = session.query(
-        selected_examples.c.japanese_example_row_id, 
-        selected_examples.c.selected_kanji_count, 
-        JapaneseExample.kanji_count, 
-        JapaneseExample.entry
-    ).join(
-        JapaneseExample,
-        selected_examples.c.japanese_example_row_id == JapaneseExample.row_id
-    ).filter(
-        JapaneseExample.kanji_count - selected_examples.c.selected_kanji_count <= max_unknown_kanji,
-        JapaneseExample.kanji_count >= min_kanji
-    ).all()
-    return [list(i) for i in examples]
+def get_sentences_by_kanji(kanjiList, min_kanji = 3, max_unknown_kanji = 1):
+    examples = session.execute(select([column('example'), column('origin')]).
+                             select_from(func.get_kanji_examples_by_kanji(kanjiList, min_kanji, max_unknown_kanji).alias())).fetchall()
+    return [i._row for i in examples][0:500]
