@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+
+{% block content %}
+	<div class = 'Examples' id = 'Examples'>
+		<label for="lists">Lists:</label>
+		<select name="lists" id="lists">
+			<option value="wk1">Wanikani 1</option>
+			<option value="wk2">Wanikani 2</option>
+		</select>
+		<button type="button" onclick = "sendKanjiList()">Select</button>
+		<div id = "Example" style="font-size:25px">asdasd</div>
+		<button id = "nextButton" type="button" onclick = "nextExample()" disabled = 1>Next</button>
+	</div>
+	<script src = "{{ url_for('static', filename='js/kanjilists.js')}}"></script>
+{% endblock %}
