@@ -18,3 +18,10 @@ class JapaneseExampleKanji(Base):
     row_id = Column(Integer, primary_key = True)
     kanji = Column(String, nullable = False)
     japanese_example_row_id = Column(Integer, nullable = False)
+    
+class User(Base):
+    __tablename__ = 'user'
+    
+    row_id = Column(Integer, primary_key = True)
+    login = Column(String)
+    password_hash = Column(String(128))
