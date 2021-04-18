@@ -1,9 +1,9 @@
 from app import app
 from app.users import User, get_user_by_login
-from app.forms import LoginForm
-from flask import request, render_template, jsonify, redirect, url_for
+from app.forms import LoginForm, RegistrationForm
+from flask import request, render_template, jsonify, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user
-from NHCB.nhcb import get_sentences_by_kanji
+from NHCB.nhcb import get_sentences_by_kanji, register_user
 
 #UI
 
@@ -26,28 +26,35 @@ def kanjilists():
 
 @app.route('/login', methods = ['GET', 'POST'])
 def login():
-    #logout_user()
-    #login_user(User(1, 'lain', 'qwe123'))
-    print(vars(current_user))
     form = LoginForm()
     if form.validate_on_submit():
         user = get_user_by_login(form.login.data)
-        if user is None or not form.password.data == '123':
-            return redirect(url_for('index'))
-        login_user(user)
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid login/password')
+            return redirect(url_for('login'))
+        login_user(user, remember = form.remember_me.data)
         return redirect(url_for('index'))
-    return render_template('login.html', form = LoginForm())
-    '''
-    user = User()
-    user.id = 1
-    login_user(user)
-    return 'asd'
-    '''
+    return render_template('login.html', form = form)
 
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/register', methods = ['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(login=form.login.data)
+        user.set_password(form.password.data)
+        
+        register_user(user.login, user.password_hash)
+        
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
 
 #API
 

@@ -16,12 +16,20 @@ def get_sentences_by_kanji(kanjiList, min_kanji = 3, max_unknown_kanji = 1):
                              select_from(func.get_kanji_examples_by_kanji(kanjiList, min_kanji, max_unknown_kanji).alias()))
     return [i._row for i in examples][0:500]
 
-def get_user_data(login):
-    user = User()
+def get_user_data_by_id(id):
     
-    # get data from db
+    user = session.query(User).filter_by(row_id = id).first()
     
-    user.row_id = 1
-    user.login = 'lain'
-    user.password_hash = 'qwe123'
     return user
+
+def get_user_data_by_login(login):
+    
+    user = session.query(User).filter_by(login = login).first()
+    
+    return user
+
+def register_user(login, password_hash):
+    
+    user = User(login = login, password_hash = password_hash)
+    session.add(user)
+    session.commit()

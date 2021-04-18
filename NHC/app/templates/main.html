@@ -10,11 +10,19 @@
 	</head>
 	<body>
 		<div>
+			{% if not current_user.is_anonymous %}
+				({{current_user.login}})
+			{% else %}
+				(no user)
+			{% endif %}
 			NihonCon: 
 			<a href = '{{url_for("index")}}'>Home</a>
 			<a href = '{{url_for("workspace")}}'>Workspace</a>
 			<a href = '{{url_for("examples")}}'>Examples</a>
 			<a href = '{{url_for("kanjilists")}}'>Kanji lists</a>
+			<a href = '{{url_for("login")}}'>Login</a>
+			<a href = '{{url_for("logout")}}'>Logout</a>
+			<a href = '{{url_for("register")}}'>Register</a>
 		</div>
 		<hr>
 		{% with messages = get_flashed_messages() %}
